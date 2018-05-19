@@ -34,3 +34,10 @@ By default it will overwrite the file contents but you can pass the `--append` o
 the existing contents.
 
     $ ./vendor/bin/changelog-generator generate --user=doctrine --repository=migrations --milestone=2.0 --file=changelog.md --append
+
+### Connecting Issues & Pull Requests
+
+To make the changelog easier to read, we try to connect pull requests to issues by looking for `#{ISSUE_NUMBER}` in the body
+of the pull request. When the user of the issue and pull request are different github users, the changelog line will look like the following:
+
+- [634: Fix namespace in bin/doctrine-migrations.php](https://github.com/doctrine/migrations/pull/634) thanks to @Majkl578 and @jwage

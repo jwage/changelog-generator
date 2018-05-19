@@ -14,10 +14,18 @@ final class IssueFactoryTest extends TestCase
 
     public function testCreate() : void
     {
-        $issue = $this->issueFactory->create(1, 'Test', 'https://google.com', 'jwage', ['Enhancement']);
+        $issue = $this->issueFactory->create([
+            'number' => 1,
+            'title' => 'Test Title',
+            'body' => 'Test Body',
+            'html_url' => 'https://google.com',
+            'user' => ['login' => 'jwage'],
+            'labels' => [['name' => 'Enhancement']],
+        ]);
 
         self::assertEquals(1, $issue->getNumber());
-        self::assertEquals('Test', $issue->getTitle());
+        self::assertEquals('Test Title', $issue->getTitle());
+        self::assertEquals('Test Body', $issue->getBody());
         self::assertEquals('https://google.com', $issue->getUrl());
         self::assertEquals('jwage', $issue->getUser());
         self::assertEquals(['Enhancement'], $issue->getLabels());

@@ -21,7 +21,7 @@ class IssueFetcher
     }
 
     /**
-     * @return Issue[]
+     * @return mixed[]
      */
     public function fetchMilestoneIssues(string $user, string $repository, string $milestone) : array
     {
