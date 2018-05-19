@@ -13,6 +13,8 @@ You can install with composer:
 
     $ composer require jwage/changelog-generator
 
+Or you can download the latest `changelog-generator.phar` file from the [releases](https://github.com/jwage/changelog-generator/releases) pages.
+
 ## Example
 
 Here is what an example changelog looks like. It was generated from the ``0.0.3`` milestone in GitHub for this project:
