@@ -1,7 +1,6 @@
 # Changelog Generator
 
 [![Build Status](https://travis-ci.org/jwage/changelog-generator.svg)](https://travis-ci.org/jwage/changelog-generator)
-[![Dependency Status](https://www.versioneye.com/php/jwage:changelog-generator/badge.svg)](https://www.versioneye.com/php/jwage:changelog-generator/)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jwage/changelog-generator/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jwage/changelog-generator/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/jwage/changelog-generator/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/jwage/changelog-generator/?branch=master)
 
