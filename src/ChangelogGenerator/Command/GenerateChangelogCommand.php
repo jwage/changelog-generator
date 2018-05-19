@@ -182,7 +182,11 @@ EOT
         $config = $input->getOption('config');
 
         if ($config === null) {
-            return null;
+            $config = 'changelog-generator-config.php';
+
+            if (! file_exists($config)) {
+                return null;
+            }
         }
 
         if (! file_exists($config)) {
