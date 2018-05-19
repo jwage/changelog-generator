@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ChangelogGenerator\Tests;
 
+use ChangelogGenerator\ChangelogConfig;
 use ChangelogGenerator\IssueClient;
 use ChangelogGenerator\IssueClientResponse;
 use ChangelogGenerator\IssueFetcher;
@@ -32,7 +33,9 @@ final class IssueFetcherTest extends TestCase
             ->with('https://www.google.com')
             ->willReturn($response2);
 
-        $issues = $this->issueFetcher->fetchMilestoneIssues('jwage', 'changelog-generator', '1.0');
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
+
+        $issues = $this->issueFetcher->fetchMilestoneIssues($changelogConfig);
 
         self::assertEquals([1, 2], $issues);
     }

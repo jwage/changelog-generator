@@ -25,13 +25,15 @@ class ChangelogGenerator
         $this->issueGrouper    = $issueGrouper;
     }
 
-    public function generate(string $user, string $repository, string $milestone, OutputInterface $output) : void
-    {
-        $issues      = $this->issueRepository->getMilestoneIssues($user, $repository, $milestone);
+    public function generate(
+        ChangelogConfig $changelogConfig,
+        OutputInterface $output
+    ) : void {
+        $issues      = $this->issueRepository->getMilestoneIssues($changelogConfig);
         $issueGroups = $this->issueGrouper->groupIssues($issues);
 
         $output->writeln([
-            sprintf('## %s', $milestone),
+            sprintf('## %s', $changelogConfig->getMilestone()),
             '',
             sprintf('Total issues resolved: **%s**', $this->getNumberOfIssues($issues)),
             sprintf('Total pull requests resolved: **%s**', $this->getNumberOfPullRequests($issues)),

@@ -21,9 +21,9 @@ class IssueRepository
     /**
      * @return Issue[]
      */
-    public function getMilestoneIssues(string $user, string $repository, string $milestone) : array
+    public function getMilestoneIssues(ChangelogConfig $changelogConfig) : array
     {
-        $issuesData = $this->issueFetcher->fetchMilestoneIssues($user, $repository, $milestone);
+        $issuesData = $this->issueFetcher->fetchMilestoneIssues($changelogConfig);
 
         $issues = [];
 

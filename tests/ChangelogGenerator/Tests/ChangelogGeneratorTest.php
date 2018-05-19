@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ChangelogGenerator\Tests;
 
+use ChangelogGenerator\ChangelogConfig;
 use ChangelogGenerator\ChangelogGenerator;
 use ChangelogGenerator\Issue;
 use ChangelogGenerator\IssueGroup;
@@ -41,9 +42,11 @@ final class ChangelogGeneratorTest extends TestCase
         $milestoneIssues = [$issue1, $issue2, $pullRequest1, $pullRequest2];
         $issueGroups     = [$issueGroup];
 
+        $changelogConfig = new ChangelogConfig($user, $repository, $milestone, []);
+
         $this->issueRepository->expects($this->once())
             ->method('getMilestoneIssues')
-            ->with($user, $repository, $milestone)
+            ->with($changelogConfig)
             ->willReturn($milestoneIssues);
 
         $this->issueGrouper->expects($this->once())
@@ -113,7 +116,7 @@ final class ChangelogGeneratorTest extends TestCase
             ->method('writeln')
             ->with('Issue #1');
 
-        $this->changelogGenerator->generate($user, $repository, $milestone, $output);
+        $this->changelogGenerator->generate($changelogConfig, $output);
     }
 
     protected function setUp() : void
