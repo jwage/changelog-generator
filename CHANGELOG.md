@@ -1,3 +1,5 @@
+# Changelog
+
 ## 0.0.2
 
 - Total issues resolved: **0**
