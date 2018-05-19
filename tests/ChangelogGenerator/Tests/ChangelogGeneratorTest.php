@@ -63,17 +63,33 @@ final class ChangelogGeneratorTest extends TestCase
             ->method('render')
             ->willReturn('Issue #1');
 
+        $issue1->expects($this->once())
+            ->method('getUser')
+            ->willReturn('jwage');
+
         $issue2->expects($this->once())
             ->method('render')
             ->willReturn('Issue #2');
+
+        $issue2->expects($this->once())
+            ->method('getUser')
+            ->willReturn('jwage');
 
         $pullRequest1->expects($this->any())
             ->method('isPullRequest')
             ->willReturn(true);
 
+        $pullRequest1->expects($this->once())
+            ->method('getUser')
+            ->willReturn('Ocramius');
+
         $pullRequest2->expects($this->any())
             ->method('isPullRequest')
             ->willReturn(true);
+
+        $pullRequest2->expects($this->once())
+            ->method('getUser')
+            ->willReturn('romanb');
 
         $output->expects($this->at(0))
             ->method('writeln')
@@ -82,6 +98,7 @@ final class ChangelogGeneratorTest extends TestCase
                 '',
                 'Total issues resolved: **2**',
                 'Total pull requests resolved: **2**',
+                'Total contributors: **3**',
             ]);
 
         $output->expects($this->at(1))
