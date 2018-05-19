@@ -24,24 +24,40 @@ final class ChangelogConfigTest extends TestCase
     /** @var ChangelogConfig */
     private $changelogConfig;
 
-    public function testGetUser() : void
+    public function testGetSetUser() : void
     {
         self::assertEquals($this->user, $this->changelogConfig->getUser());
+
+        $this->changelogConfig->setUser('romanb');
+
+        self::assertEquals('romanb', $this->changelogConfig->getUser());
     }
 
-    public function testGetRepository() : void
+    public function testGetSetRepository() : void
     {
         self::assertEquals($this->repository, $this->changelogConfig->getRepository());
+
+        $this->changelogConfig->setRepository('purl');
+
+        self::assertEquals('purl', $this->changelogConfig->getRepository());
     }
 
-    public function testGetMilestone() : void
+    public function testGetSetMilestone() : void
     {
         self::assertEquals($this->milestone, $this->changelogConfig->getMilestone());
+
+        $this->changelogConfig->setMilestone('1.0');
+
+        self::assertEquals('1.0', $this->changelogConfig->getMilestone());
     }
 
-    public function testGetLabels() : void
+    public function testGetSetLabels() : void
     {
         self::assertEquals($this->labels, $this->changelogConfig->getLabels());
+
+        $this->changelogConfig->setLabels(['Improvement']);
+
+        self::assertEquals(['Improvement'], $this->changelogConfig->getLabels());
     }
 
     public function testGetMilestoneIssuesUrl() : void

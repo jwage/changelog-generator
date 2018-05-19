@@ -12,8 +12,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
+use function count;
+use function current;
+use function file_exists;
 use function fopen;
 use function getcwd;
+use function is_array;
 use function sprintf;
 
 class GenerateChangelogCommand extends Command
@@ -80,26 +84,48 @@ EOT
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'The labels to generate a changelog for.'
             )
+            ->addOption(
+                'config',
+                'c',
+                InputOption::VALUE_REQUIRED,
+                'The path to a configuration file.'
+            )
+            ->addOption(
+                'project',
+                'p',
+                InputOption::VALUE_REQUIRED,
+                'The project from the configuration to generate a changelog for.'
+            )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
+    {
+        $this->changelogGenerator->generate(
+            $this->getChangelogConfig($input),
+            $this->getChangelogOutput($input, $output)
+        );
+    }
+
+    private function getChangelogConfig(InputInterface $input) : ChangelogConfig
     {
         $user       = $input->getOption('user');
         $repository = $input->getOption('repository');
         $milestone  = $input->getOption('milestone');
         $labels     = $input->getOption('label');
 
-        $changelogOutput = $this->getChangelogOutput($input, $output);
+        $changelogConfig = $this->loadConfigFile($input);
 
-        $changelogConfig = new ChangelogConfig(
+        if ($changelogConfig !== null) {
+            return $changelogConfig;
+        }
+
+        return new ChangelogConfig(
             $user,
             $repository,
             $milestone,
             $labels
         );
-
-        $this->changelogGenerator->generate($changelogConfig, $changelogOutput);
     }
 
     /**
@@ -146,5 +172,79 @@ EOT
     private function getChangelogFilePath(?string $file) : string
     {
         return $file === null ? sprintf('%s/CHANGELOG.md', getcwd()) : $file;
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    private function loadConfigFile(InputInterface $input) : ?ChangelogConfig
+    {
+        $config = $input->getOption('config');
+
+        if ($config === null) {
+            return null;
+        }
+
+        if (! file_exists($config)) {
+            throw new InvalidArgumentException(sprintf('Configuration file "%s" does not exist.', $config));
+        }
+
+        $changelogConfigs = include $config;
+
+        if (! is_array($changelogConfigs) || count($changelogConfigs) === 0) {
+            throw new InvalidArgumentException(sprintf('Configuration file "%s" did not return anything.', $config));
+        }
+
+        $changelogConfig = $this->findChangelogConfig($input, $changelogConfigs);
+
+        $this->overrideChangelogConfig($input, $changelogConfig);
+
+        return $changelogConfig;
+    }
+
+    /**
+     * @param ChangelogConfig[] $changelogConfigs
+     */
+    private function findChangelogConfig(InputInterface $input, array $changelogConfigs) : ChangelogConfig
+    {
+        $project = $input->getOption('project');
+
+        $changelogConfig = current($changelogConfigs);
+
+        if ($project !== null) {
+            if (! isset($changelogConfigs[$project])) {
+                throw new InvalidArgumentException(sprintf('Could not find project named "%s" configured', $project));
+            }
+
+            $changelogConfig = $changelogConfigs[$project];
+        }
+
+        return $changelogConfig;
+    }
+
+    private function overrideChangelogConfig(InputInterface $input, ChangelogConfig $changelogConfig) : void
+    {
+        $user       = $input->getOption('user');
+        $repository = $input->getOption('repository');
+        $milestone  = $input->getOption('milestone');
+        $labels     = $input->getOption('label');
+
+        if ($user !== null) {
+            $changelogConfig->setUser($user);
+        }
+
+        if ($repository !== null) {
+            $changelogConfig->setRepository($repository);
+        }
+
+        if ($milestone !== null) {
+            $changelogConfig->setMilestone($milestone);
+        }
+
+        if ($labels === []) {
+            return;
+        }
+
+        $changelogConfig->setLabels($labels);
     }
 }

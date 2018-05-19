@@ -149,6 +149,153 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
+    public function testGenerateConfig() : void
+    {
+        $input = new ArrayInput([
+            'command'       => 'generate',
+            '--user'        => 'jwage',
+            '--repository'  => 'changelog-generator',
+            '--milestone'   => '1.0',
+            '--label'       => ['Enhancement', 'Bug'],
+            '--config'      => __DIR__ . '/_files/config.php',
+            '--project'     => 'changelog-generator',
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', ['Enhancement', 'Bug']);
+
+        $this->changelogGenerator->expects($this->once())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
+
+    public function testGenerateConfigDoesNotExist() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Configuration file "unknown.php" does not exist.');
+
+        $input = new ArrayInput([
+            'command'       => 'generate',
+            '--user'        => 'jwage',
+            '--repository'  => 'changelog-generator',
+            '--milestone'   => '1.0',
+            '--label'       => ['Enhancement', 'Bug'],
+            '--config'      => 'unknown.php',
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', ['Enhancement', 'Bug']);
+
+        $this->changelogGenerator->expects($this->never())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
+
+    public function testGenerateConfigEmpty() : void
+    {
+        $configFile = __DIR__ . '/_files/empty.php';
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Configuration file "%s" did not return anything.', $configFile));
+
+        $input = new ArrayInput([
+            'command'       => 'generate',
+            '--user'        => 'jwage',
+            '--repository'  => 'changelog-generator',
+            '--milestone'   => '1.0',
+            '--label'       => ['Enhancement', 'Bug'],
+            '--config'      => $configFile,
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', ['Enhancement', 'Bug']);
+
+        $this->changelogGenerator->expects($this->never())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
+
+    public function testGenerateConfigInvalidProject() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Could not find project named "unknown" configured');
+
+        $input = new ArrayInput([
+            'command'       => 'generate',
+            '--user'        => 'jwage',
+            '--repository'  => 'changelog-generator',
+            '--milestone'   => '1.0',
+            '--label'       => ['Enhancement', 'Bug'],
+            '--config'      => __DIR__ . '/_files/config.php',
+            '--project'     => 'unknown',
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', ['Enhancement', 'Bug']);
+
+        $this->changelogGenerator->expects($this->never())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
+
+    public function testGenerateConfigOverride() : void
+    {
+        $input = new ArrayInput([
+            'command'       => 'generate',
+            '--user'        => 'doctrine',
+            '--repository'  => 'migrations',
+            '--milestone'   => '2.0',
+            '--label'       => ['Improvement', 'Bug'],
+            '--config'      => __DIR__ . '/_files/config.php',
+            '--project'     => 'changelog-generator',
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = new ChangelogConfig('doctrine', 'migrations', '2.0', ['Improvement', 'Bug']);
+
+        $this->changelogGenerator->expects($this->once())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
+
+
+    public function testGenerateConfigOverrideNoLabels() : void
+    {
+        $input = new ArrayInput([
+            'command'       => 'generate',
+            '--user'        => 'doctrine',
+            '--repository'  => 'migrations',
+            '--milestone'   => '2.0',
+            '--config'      => __DIR__ . '/_files/config.php',
+            '--project'     => 'changelog-generator',
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = new ChangelogConfig('doctrine', 'migrations', '2.0', ['Enhancement', 'Bug']);
+
+        $this->changelogGenerator->expects($this->once())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
+
     public function testCreateStreamOutput() : void
     {
         $generateChangelogCommand = new GenerateChangelogCommandStub($this->changelogGenerator);
@@ -188,6 +335,7 @@ final class ConsoleTest extends TestCase
 
         $this->application = new Application('Changelog Generator', Versions::getVersion('jwage/changelog-generator'));
         $this->application->setAutoExit(false);
+        $this->application->setCatchExceptions(false);
 
         $this->generateChangelogCommand = $this->getMockBuilder(GenerateChangelogCommand::class)
             ->setConstructorArgs([$this->changelogGenerator])

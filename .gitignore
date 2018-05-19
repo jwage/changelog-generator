@@ -1,5 +1,5 @@
-box.phar
-vendor
-build
-.phpcs-cache
-
+/box.phar
+/vendor
+/build
+/.phpcs-cache
+/config.php
