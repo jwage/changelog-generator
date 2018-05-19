@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace ChangelogGenerator\Command;
 
 use ChangelogGenerator\ChangelogGenerator;
+use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\StreamOutput;
+use function fopen;
+use function getcwd;
+use function sprintf;
 
 class GenerateChangelogCommand extends Command
 {
@@ -51,6 +56,19 @@ EOT
                 InputOption::VALUE_REQUIRED,
                 'The milestone to build the changelog for.'
             )
+            ->addOption(
+                'file',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Write the changelog to a file.',
+                false
+            )
+            ->addOption(
+                'append',
+                null,
+                InputOption::VALUE_NONE,
+                'Append the changelog to the file.'
+            )
         ;
     }
 
@@ -60,6 +78,54 @@ EOT
         $repository = $input->getOption('repository');
         $milestone  = $input->getOption('milestone');
 
-        $this->changelogGenerator->generate($user, $repository, $milestone, $output);
+        $changelogOutput = $this->getChangelogOutput($input, $output);
+
+        $this->changelogGenerator->generate($user, $repository, $milestone, $changelogOutput);
+    }
+
+    /**
+     * @return false|resource
+     */
+    protected function fopen(string $file, string $mode)
+    {
+        return fopen($file, $mode);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    protected function createStreamOutput(string $file, bool $append) : StreamOutput
+    {
+        $handle = $this->fopen($file, $this->getFileHandleMode($append));
+
+        if ($handle === false) {
+            throw new InvalidArgumentException(sprintf('Could not open handle for %s', $file));
+        }
+
+        return new StreamOutput($handle);
+    }
+
+    private function getFileHandleMode(bool $append) : string
+    {
+        return $append ? 'a+' : 'w+';
+    }
+
+    private function getChangelogOutput(InputInterface $input, OutputInterface $output) : OutputInterface
+    {
+        $file   = $input->getOption('file');
+        $append = (bool) $input->getOption('append');
+
+        $changelogOutput = $output;
+
+        if ($file !== false) {
+            $changelogOutput = $this->createStreamOutput($this->getChangelogFilePath($file), $append);
+        }
+
+        return $changelogOutput;
+    }
+
+    private function getChangelogFilePath(?string $file) : string
+    {
+        return $file === null ? sprintf('%s/CHANGELOG.md', getcwd()) : $file;
     }
 }

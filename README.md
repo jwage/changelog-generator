@@ -18,3 +18,19 @@ You can install with composer:
 Generate a change log based on a GitHub milestone with the following command:
 
     $ ./vendor/bin/changelog-generator generate --user=doctrine --repository=migrations --milestone=2.0
+
+### Write to File
+
+Write the generated changelog to a file with the `--file` option. If you don't provide a value, it will be written
+to the current working directory in a file named `CHANGELOG.md`:
+
+    $ ./vendor/bin/changelog-generator generate --user=doctrine --repository=migrations --milestone=2.0 --file
+
+You can pass a value to `--file` to specify where the changelog file should be written:
+
+    $ ./vendor/bin/changelog-generator generate --user=doctrine --repository=migrations --milestone=2.0 --file=changelog.md
+
+By default it will overwrite the file contents but you can pass the `--append` option to append the changelog to
+the existing contents.
+
+    $ ./vendor/bin/changelog-generator generate --user=doctrine --repository=migrations --milestone=2.0 --file=changelog.md --append
