@@ -81,3 +81,8 @@ By default it will generate a changelog for the first changelog config in the ar
 `--project` option if you want to generate a changelog for a specific project in the config file:
 
     $ ./vendor/bin/changelog-generator generate --config=config.php --project=another-project
+
+By default if you name your config file `changelog-generator-config.php`, the changelog generator will look for that file
+if no `--config` option is passed.
+
+    $ ./vendor/bin/changelog-generator generate
