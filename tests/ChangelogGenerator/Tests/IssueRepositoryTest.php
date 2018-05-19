@@ -30,6 +30,7 @@ final class IssueRepositoryTest extends TestCase
                 [
                     'number' => 1,
                     'title' => 'Issue #1',
+                    'body' => 'Issue #1 Body',
                     'html_url' => 'https://github.com/jwage/changelog-generator/issue/1',
                     'user' => ['login' => 'jwage'],
                     'labels' => [['name' => 'Enhancement']],
@@ -37,6 +38,7 @@ final class IssueRepositoryTest extends TestCase
                 [
                     'number' => 2,
                     'title' => '[Bug] Issue #2',
+                    'body' => 'Issue #2 Body',
                     'html_url' => 'https://github.com/jwage/changelog-generator/issue/2',
                     'user' => ['login' => 'jwage'],
                     'labels' => [['name' => 'Bug']],
@@ -48,12 +50,26 @@ final class IssueRepositoryTest extends TestCase
 
         $this->issueFactory->expects($this->at(0))
             ->method('create')
-            ->with(1, 'Issue #1', 'https://github.com/jwage/changelog-generator/issue/1', 'jwage', ['Enhancement'])
+            ->with([
+                'number' => 1,
+                'title' => 'Issue #1',
+                'body' => 'Issue #1 Body',
+                'html_url' => 'https://github.com/jwage/changelog-generator/issue/1',
+                'user' => ['login' => 'jwage'],
+                'labels' => [['name' => 'Enhancement']],
+            ])
             ->willReturn($issue1);
 
         $this->issueFactory->expects($this->at(1))
             ->method('create')
-            ->with(2, '&#91;Bug&#92; Issue #2', 'https://github.com/jwage/changelog-generator/issue/2', 'jwage', ['Bug'])
+            ->with([
+                'number' => 2,
+                'title' => '[Bug] Issue #2',
+                'body' => 'Issue #2 Body',
+                'html_url' => 'https://github.com/jwage/changelog-generator/issue/2',
+                'user' => ['login' => 'jwage'],
+                'labels' => [['name' => 'Bug']],
+            ])
             ->willReturn($issue2);
 
         $issues = $this->issueRepository->getMilestoneIssues('jwage', 'changelog-generator', '1.0');
