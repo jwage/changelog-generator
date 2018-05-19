@@ -44,14 +44,29 @@ class ChangelogConfig
         return $this->user;
     }
 
+    public function setUser(string $user) : void
+    {
+        $this->user = $user;
+    }
+
     public function getRepository() : string
     {
         return $this->repository;
     }
 
+    public function setRepository(string $repository) : void
+    {
+        $this->repository = $repository;
+    }
+
     public function getMilestone() : string
     {
         return $this->milestone;
+    }
+
+    public function setMilestone(string $milestone) : void
+    {
+        $this->milestone = $milestone;
     }
 
     /**
@@ -60,6 +75,14 @@ class ChangelogConfig
     public function getLabels() : array
     {
         return $this->labels;
+    }
+
+    /**
+     * @param string[] $labels
+     */
+    public function setLabels(array $labels) : void
+    {
+        $this->labels = $labels;
     }
 
     public function getMilestoneIssuesUrl(string $label) : string
