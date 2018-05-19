@@ -1,5 +1,10 @@
 # Changelog Generator
 
+[![Build Status](https://travis-ci.org/jwage/changelog-generator.svg)](https://travis-ci.org/jwage/changelog-generator)
+[![Dependency Status](https://www.versioneye.com/php/jwage:changelog-generator/badge.svg)](https://www.versioneye.com/php/jwage:changelog-generator/)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jwage/changelog-generator/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jwage/changelog-generator/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/jwage/changelog-generator/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/jwage/changelog-generator/?branch=master)
+
 This library will generate a changelog markdown document from a GitHub milestone. It is based off of
 [weierophinney/changelog_generator](https://github.com/weierophinney/changelog_generator).
 
