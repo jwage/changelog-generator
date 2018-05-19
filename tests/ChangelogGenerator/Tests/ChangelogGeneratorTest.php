@@ -31,10 +31,14 @@ final class ChangelogGeneratorTest extends TestCase
 
         $output = $this->createMock(OutputInterface::class);
 
-        $issue      = $this->createMock(Issue::class);
+        $issue1       = $this->createMock(Issue::class);
+        $issue2       = $this->createMock(Issue::class);
+        $pullRequest1 = $this->createMock(Issue::class);
+        $pullRequest2 = $this->createMock(Issue::class);
+
         $issueGroup = $this->createMock(IssueGroup::class);
 
-        $milestoneIssues = [$issue];
+        $milestoneIssues = [$issue1, $issue2, $pullRequest1, $pullRequest2];
         $issueGroups     = [$issueGroup];
 
         $this->issueRepository->expects($this->once())
@@ -53,18 +57,31 @@ final class ChangelogGeneratorTest extends TestCase
 
         $issueGroup->expects($this->once())
             ->method('getIssues')
-            ->willReturn([$issue]);
+            ->willReturn([$issue1, $issue2]);
 
-        $issue->expects($this->once())
+        $issue1->expects($this->once())
             ->method('render')
             ->willReturn('Issue #1');
+
+        $issue2->expects($this->once())
+            ->method('render')
+            ->willReturn('Issue #2');
+
+        $pullRequest1->expects($this->any())
+            ->method('isPullRequest')
+            ->willReturn(true);
+
+        $pullRequest2->expects($this->any())
+            ->method('isPullRequest')
+            ->willReturn(true);
 
         $output->expects($this->at(0))
             ->method('writeln')
             ->with([
                 '## 1.0',
                 '',
-                'Total issues resolved: **1**',
+                'Total issues resolved: **2**',
+                'Total pull requests resolved: **2**',
             ]);
 
         $output->expects($this->at(1))
