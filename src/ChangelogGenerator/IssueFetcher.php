@@ -71,7 +71,6 @@ class IssueFetcher
     private function getNextUrl(Response $response) : ?string
     {
         $links   = $response->getHeader('Link');
-        $nextUrl = '';
 
         foreach ($links as $link) {
             $matches = [];
