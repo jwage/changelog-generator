@@ -1,0 +1,5 @@
+box.phar
+vendor
+build
+.phpcs-cache
+
