@@ -12,6 +12,7 @@ use PackageVersions\Versions;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use function sprintf;
@@ -63,7 +64,7 @@ final class ConsoleTest extends TestCase
         $streamOutput = $this->createMock(StreamOutput::class);
 
         $this->generateChangelogCommand->expects($this->once())
-            ->method('createStreamOutput')
+            ->method('createOutput')
             ->willReturn($streamOutput);
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
@@ -89,7 +90,7 @@ final class ConsoleTest extends TestCase
         $streamOutput = $this->createMock(StreamOutput::class);
 
         $this->generateChangelogCommand->expects($this->once())
-            ->method('createStreamOutput')
+            ->method('createOutput')
             ->willReturn($streamOutput);
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
@@ -116,7 +117,61 @@ final class ConsoleTest extends TestCase
         $streamOutput = $this->createMock(StreamOutput::class);
 
         $this->generateChangelogCommand->expects($this->once())
-            ->method('createStreamOutput')
+            ->method('createOutput')
+            ->willReturn($streamOutput);
+
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
+
+        $this->changelogGenerator->expects($this->once())
+            ->method('generate')
+            ->with($changelogConfig, $streamOutput);
+
+        $this->application->run($input, $output);
+    }
+
+    public function testGenerateFilePrepend() : void
+    {
+        $input = new ArrayInput([
+            'command'       => 'generate',
+            '--user'        => 'jwage',
+            '--repository'  => 'changelog-generator',
+            '--milestone'   => '1.0',
+            '--file'        => 'CHANGELOG.md',
+            '--prepend'     => true,
+        ]);
+
+        $output         = $this->createMock(OutputInterface::class);
+        $bufferedOutput = $this->createMock(BufferedOutput::class);
+
+        $this->generateChangelogCommand->expects($this->once())
+            ->method('createOutput')
+            ->willReturn($bufferedOutput);
+
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
+
+        $this->changelogGenerator->expects($this->once())
+            ->method('generate')
+            ->with($changelogConfig, $bufferedOutput);
+
+        $this->application->run($input, $output);
+    }
+
+    public function testGenerateFilePrependStreamOutput() : void
+    {
+        $input = new ArrayInput([
+            'command'       => 'generate',
+            '--user'        => 'jwage',
+            '--repository'  => 'changelog-generator',
+            '--milestone'   => '1.0',
+            '--file'        => 'CHANGELOG.md',
+            '--prepend'     => true,
+        ]);
+
+        $output       = $this->createMock(OutputInterface::class);
+        $streamOutput = $this->createMock(StreamOutput::class);
+
+        $this->generateChangelogCommand->expects($this->once())
+            ->method('createOutput')
             ->willReturn($streamOutput);
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
@@ -296,19 +351,31 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testCreateStreamOutput() : void
+    public function testCreateOutput() : void
     {
         $generateChangelogCommand = new GenerateChangelogCommandStub($this->changelogGenerator);
 
         $file = sprintf('%s/test.md', sys_get_temp_dir());
 
-        self::assertInstanceOf(StreamOutput::class, $generateChangelogCommand->createStreamOutputTest($file, true));
-        self::assertInstanceOf(StreamOutput::class, $generateChangelogCommand->createStreamOutputTest($file, false));
+        self::assertInstanceOf(
+            StreamOutput::class,
+            $generateChangelogCommand->createOutputTest($file, GenerateChangelogCommand::WRITE_STRATEGY_APPEND)
+        );
+
+        self::assertInstanceOf(
+            BufferedOutput::class,
+            $generateChangelogCommand->createOutputTest($file, GenerateChangelogCommand::WRITE_STRATEGY_PREPEND)
+        );
+
+        self::assertInstanceOf(
+            StreamOutput::class,
+            $generateChangelogCommand->createOutputTest($file, GenerateChangelogCommand::WRITE_STRATEGY_REPLACE)
+        );
 
         unlink($file);
     }
 
-    public function testCreateStreamOutputCouldNotOpenHandleInvalidArgumentException() : void
+    public function testCreateOutputCouldNotOpenHandleInvalidArgumentException() : void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Could not open handle for /tmp/test.md');
@@ -326,7 +393,7 @@ final class ConsoleTest extends TestCase
             ->with($file, 'a+')
             ->willReturn(false);
 
-        $generateChangelogCommand->createStreamOutputTest($file, true);
+        $generateChangelogCommand->createOutputTest($file, GenerateChangelogCommand::WRITE_STRATEGY_APPEND);
     }
 
     protected function setUp() : void
@@ -339,7 +406,7 @@ final class ConsoleTest extends TestCase
 
         $this->generateChangelogCommand = $this->getMockBuilder(GenerateChangelogCommand::class)
             ->setConstructorArgs([$this->changelogGenerator])
-            ->setMethods(['createStreamOutput'])
+            ->setMethods(['createOutput'])
             ->getMock();
 
         $this->application->add($this->generateChangelogCommand);
@@ -348,8 +415,8 @@ final class ConsoleTest extends TestCase
 
 class GenerateChangelogCommandStub extends GenerateChangelogCommand
 {
-    public function createStreamOutputTest(string $file, bool $append) : StreamOutput
+    public function createOutputTest(string $file, string $fileWriteStrategy) : OutputInterface
     {
-        return $this->createStreamOutput($file, $append);
+        return $this->createOutput($file, $fileWriteStrategy);
     }
 }

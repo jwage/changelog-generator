@@ -10,11 +10,14 @@ use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use function count;
 use function current;
 use function file_exists;
+use function file_get_contents;
+use function file_put_contents;
 use function fopen;
 use function getcwd;
 use function is_array;
@@ -22,6 +25,10 @@ use function sprintf;
 
 class GenerateChangelogCommand extends Command
 {
+    public const WRITE_STRATEGY_REPLACE = 'replace';
+    public const WRITE_STRATEGY_APPEND  = 'append';
+    public const WRITE_STRATEGY_PREPEND = 'prepend';
+
     /** @var ChangelogGenerator */
     private $changelogGenerator;
 
@@ -79,6 +86,12 @@ EOT
                 'Append the changelog to the file.'
             )
             ->addOption(
+                'prepend',
+                null,
+                InputOption::VALUE_NONE,
+                'Prepend the changelog to the file.'
+            )
+            ->addOption(
                 'label',
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
@@ -101,10 +114,24 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
+        $changelogOutput = $this->getChangelogOutput($input, $output);
+
         $this->changelogGenerator->generate(
             $this->getChangelogConfig($input),
-            $this->getChangelogOutput($input, $output)
+            $changelogOutput
         );
+
+        if ($this->getFileWriteStrategy($input) !== self::WRITE_STRATEGY_PREPEND) {
+            return;
+        }
+
+        $file = $this->getChangelogFilePath($input->getOption('file'));
+
+        if (! ($changelogOutput instanceof BufferedOutput)) {
+            return;
+        }
+
+        file_put_contents($file, $changelogOutput->fetch() . file_get_contents($file));
     }
 
     private function getChangelogConfig(InputInterface $input) : ChangelogConfig
@@ -139,9 +166,13 @@ EOT
     /**
      * @throws InvalidArgumentException
      */
-    protected function createStreamOutput(string $file, bool $append) : StreamOutput
+    protected function createOutput(string $file, string $fileWriteStrategy) : OutputInterface
     {
-        $handle = $this->fopen($file, $this->getFileHandleMode($append));
+        if ($fileWriteStrategy === self::WRITE_STRATEGY_PREPEND) {
+            return new BufferedOutput();
+        }
+
+        $handle = $this->fopen($file, $this->getFileHandleMode($fileWriteStrategy));
 
         if ($handle === false) {
             throw new InvalidArgumentException(sprintf('Could not open handle for %s', $file));
@@ -150,23 +181,43 @@ EOT
         return new StreamOutput($handle);
     }
 
-    private function getFileHandleMode(bool $append) : string
+    private function getFileHandleMode(string $fileWriteStrategy) : string
     {
-        return $append ? 'a+' : 'w+';
+        if ($fileWriteStrategy === self::WRITE_STRATEGY_APPEND) {
+            return 'a+';
+        }
+
+        return 'w+';
     }
 
     private function getChangelogOutput(InputInterface $input, OutputInterface $output) : OutputInterface
     {
-        $file   = $input->getOption('file');
-        $append = (bool) $input->getOption('append');
+        $file              = $input->getOption('file');
+        $fileWriteStrategy = $this->getFileWriteStrategy($input);
 
         $changelogOutput = $output;
 
         if ($file !== false) {
-            $changelogOutput = $this->createStreamOutput($this->getChangelogFilePath($file), $append);
+            $changelogOutput = $this->createOutput($this->getChangelogFilePath($file), $fileWriteStrategy);
         }
 
         return $changelogOutput;
+    }
+
+    private function getFileWriteStrategy(InputInterface $input) : string
+    {
+        $append  = (bool) $input->getOption('append');
+        $prepend = (bool) $input->getOption('prepend');
+
+        if ($append) {
+            return self::WRITE_STRATEGY_APPEND;
+        }
+
+        if ($prepend) {
+            return self::WRITE_STRATEGY_PREPEND;
+        }
+
+        return self::WRITE_STRATEGY_REPLACE;
     }
 
     private function getChangelogFilePath(?string $file) : string

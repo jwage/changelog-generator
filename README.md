@@ -69,6 +69,10 @@ the existing contents.
 
     $ ./vendor/bin/changelog-generator generate --user=doctrine --repository=migrations --milestone=2.0 --file=changelog.md --append
 
+If you want to prepend the changelog to an existing file, use the `--prepend` option:
+
+    $ ./vendor/bin/changelog-generator generate --user=doctrine --repository=migrations --milestone=2.0 --file=changelog.md --prepend
+
 ## Connecting Issues & Pull Requests
 
 To make the changelog easier to read, we try to connect pull requests to issues by looking for `#{ISSUE_NUMBER}` in the body
