@@ -7,6 +7,15 @@
 This library will generate a changelog markdown document from a GitHub milestone. It is based off of
 [weierophinney/changelog_generator](https://github.com/weierophinney/changelog_generator).
 
+## Features
+
+- Shows total issues, pull requests and contributors in a GitHub milestone.
+- Filter by GitHub labels.
+- Grouped by GitHub labels.
+- Write changelog to a file.
+- Multi-Project configuration.
+- Connects related pull requests and issues to reduce redundant lines in the changelog.
+
 ## Installation
 
 You can install with composer:
