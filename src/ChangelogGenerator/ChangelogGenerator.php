@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ChangelogGenerator;
 
 use Symfony\Component\Console\Output\OutputInterface;
+use function array_filter;
 use function count;
 use function sprintf;
 
@@ -30,7 +31,8 @@ class ChangelogGenerator
         $output->writeln([
             sprintf('## %s', $milestone),
             '',
-            sprintf('Total issues resolved: **%s**', count($issues)),
+            sprintf('Total issues resolved: **%s**', $this->getNumberOfIssues($issues)),
+            sprintf('Total pull requests resolved: **%s**', $this->getNumberOfPullRequests($issues)),
         ]);
 
         foreach ($issueGroups as $issueGroup) {
@@ -44,5 +46,25 @@ class ChangelogGenerator
                 $output->writeln($issue->render());
             }
         }
+    }
+
+    /**
+     * @param Issue[] $issues
+     */
+    private function getNumberOfIssues(array $issues) : int
+    {
+        return count(array_filter($issues, function (Issue $issue) : bool {
+            return ! $issue->isPullRequest();
+        }));
+    }
+
+    /**
+     * @param Issue[] $issues
+     */
+    private function getNumberOfPullRequests(array $issues) : int
+    {
+        return count(array_filter($issues, function (Issue $issue) : bool {
+            return $issue->isPullRequest();
+        }));
     }
 }
