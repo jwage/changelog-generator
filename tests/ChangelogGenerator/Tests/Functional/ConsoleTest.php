@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ChangelogGenerator\Tests\Functional;
 
+use ChangelogGenerator\ChangelogConfig;
 use ChangelogGenerator\ChangelogGenerator;
 use ChangelogGenerator\Command\GenerateChangelogCommand;
 use InvalidArgumentException;
@@ -39,9 +40,11 @@ final class ConsoleTest extends TestCase
 
         $output = $this->createMock(OutputInterface::class);
 
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
+
         $this->changelogGenerator->expects($this->once())
             ->method('generate')
-            ->with('jwage', 'changelog-generator', '1.0', $output);
+            ->with($changelogConfig, $output);
 
         $this->application->run($input, $output);
     }
@@ -63,9 +66,11 @@ final class ConsoleTest extends TestCase
             ->method('createStreamOutput')
             ->willReturn($streamOutput);
 
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
+
         $this->changelogGenerator->expects($this->once())
             ->method('generate')
-            ->with('jwage', 'changelog-generator', '1.0', $streamOutput);
+            ->with($changelogConfig, $streamOutput);
 
         $this->application->run($input, $output);
     }
@@ -87,9 +92,11 @@ final class ConsoleTest extends TestCase
             ->method('createStreamOutput')
             ->willReturn($streamOutput);
 
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
+
         $this->changelogGenerator->expects($this->once())
             ->method('generate')
-            ->with('jwage', 'changelog-generator', '1.0', $streamOutput);
+            ->with($changelogConfig, $streamOutput);
 
         $this->application->run($input, $output);
     }
@@ -112,9 +119,32 @@ final class ConsoleTest extends TestCase
             ->method('createStreamOutput')
             ->willReturn($streamOutput);
 
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
+
         $this->changelogGenerator->expects($this->once())
             ->method('generate')
-            ->with('jwage', 'changelog-generator', '1.0', $streamOutput);
+            ->with($changelogConfig, $streamOutput);
+
+        $this->application->run($input, $output);
+    }
+
+    public function testGenerateLabel() : void
+    {
+        $input = new ArrayInput([
+            'command'       => 'generate',
+            '--user'        => 'jwage',
+            '--repository'  => 'changelog-generator',
+            '--milestone'   => '1.0',
+            '--label'       => ['Enhancement', 'Bug'],
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', ['Enhancement', 'Bug']);
+
+        $this->changelogGenerator->expects($this->once())
+            ->method('generate')
+            ->with($changelogConfig, $output);
 
         $this->application->run($input, $output);
     }

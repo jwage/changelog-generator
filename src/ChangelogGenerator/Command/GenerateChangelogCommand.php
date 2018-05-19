@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ChangelogGenerator\Command;
 
+use ChangelogGenerator\ChangelogConfig;
 use ChangelogGenerator\ChangelogGenerator;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
@@ -36,6 +37,10 @@ class GenerateChangelogCommand extends Command
 The <info>%command.name%</info> command generates a changelog markdown document from a GitHub milestone:
 
     <info>%command.full_name% --user=doctrine --repository=migrations --milestone=2.0</info>
+
+You can filter the changelog by label names using the --label option:
+
+    <info>%command.full_name% --user=doctrine --repository=migrations --milestone=2.0 --label=Enhancement --label=Bug</info>
 EOT
             )
             ->addOption(
@@ -69,6 +74,12 @@ EOT
                 InputOption::VALUE_NONE,
                 'Append the changelog to the file.'
             )
+            ->addOption(
+                'label',
+                null,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'The labels to generate a changelog for.'
+            )
         ;
     }
 
@@ -77,10 +88,18 @@ EOT
         $user       = $input->getOption('user');
         $repository = $input->getOption('repository');
         $milestone  = $input->getOption('milestone');
+        $labels     = $input->getOption('label');
 
         $changelogOutput = $this->getChangelogOutput($input, $output);
 
-        $this->changelogGenerator->generate($user, $repository, $milestone, $changelogOutput);
+        $changelogConfig = new ChangelogConfig(
+            $user,
+            $repository,
+            $milestone,
+            $labels
+        );
+
+        $this->changelogGenerator->generate($changelogConfig, $changelogOutput);
     }
 
     /**

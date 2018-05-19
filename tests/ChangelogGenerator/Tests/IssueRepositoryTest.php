@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ChangelogGenerator\Tests;
 
+use ChangelogGenerator\ChangelogConfig;
 use ChangelogGenerator\Issue;
 use ChangelogGenerator\IssueFactory;
 use ChangelogGenerator\IssueFetcher;
@@ -23,9 +24,11 @@ final class IssueRepositoryTest extends TestCase
 
     public function testGetMilestoneIssues() : void
     {
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
+
         $this->issueFetcher->expects($this->once())
             ->method('fetchMilestoneIssues')
-            ->with('jwage', 'changelog-generator', '1.0')
+            ->with($changelogConfig)
             ->willReturn([
                 [
                     'number' => 1,
@@ -72,7 +75,7 @@ final class IssueRepositoryTest extends TestCase
             ])
             ->willReturn($issue2);
 
-        $issues = $this->issueRepository->getMilestoneIssues('jwage', 'changelog-generator', '1.0');
+        $issues = $this->issueRepository->getMilestoneIssues($changelogConfig);
 
         self::assertCount(2, $issues);
         self::assertSame($issue1, $issues[1]);

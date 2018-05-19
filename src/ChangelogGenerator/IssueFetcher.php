@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace ChangelogGenerator;
 
-use function sprintf;
-use function str_replace;
-use function urlencode;
+use function count;
 
 class IssueFetcher
 {
-    private const ROOT_URL = 'https://api.github.com';
-
     /** @var IssueClient */
     private $issueClient;
 
@@ -23,46 +19,37 @@ class IssueFetcher
     /**
      * @return mixed[]
      */
-    public function fetchMilestoneIssues(string $user, string $repository, string $milestone) : array
+    public function fetchMilestoneIssues(ChangelogConfig $changelogConfig) : array
     {
-        $url = $this->getMilestoneIssuesUrl($user, $repository, $milestone);
+        $labels = $changelogConfig->getLabels();
+        $labels = count($labels) === 0 ? [''] : $labels;
 
         $issues = [];
 
-        while (true) {
-            $response = $this->issueClient->execute($url);
+        foreach ($labels as $label) {
+            $url = $changelogConfig->getMilestoneIssuesUrl($label);
 
-            $body = $response->getBody();
+            while (true) {
+                $response = $this->issueClient->execute($url);
 
-            foreach ($body['items'] as $item) {
-                $issues[] = $item;
+                $body = $response->getBody();
+
+                foreach ($body['items'] as $item) {
+                    $issues[] = $item;
+                }
+
+                $nextUrl = $response->getNextUrl();
+
+                if ($nextUrl !== null) {
+                    $url = $nextUrl;
+
+                    continue;
+                }
+
+                break;
             }
-
-            $nextUrl = $response->getNextUrl();
-
-            if ($nextUrl !== null) {
-                $url = $nextUrl;
-
-                continue;
-            }
-
-            break;
         }
 
         return $issues;
-    }
-
-    private function getMilestoneIssuesUrl(string $user, string $repository, string $milestone) : string
-    {
-        $milestoneQuery = str_replace('"', '\"', $milestone);
-
-        $query = urlencode(sprintf(
-            'milestone:"%s" repo:%s/%s state:closed',
-            $milestoneQuery,
-            $user,
-            $repository
-        ));
-
-        return sprintf('%s/search/issues?q=%s', self::ROOT_URL, $query);
     }
 }
