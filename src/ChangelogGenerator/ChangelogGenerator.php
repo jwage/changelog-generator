@@ -35,9 +35,9 @@ class ChangelogGenerator
         $output->writeln([
             sprintf('## %s', $changelogConfig->getMilestone()),
             '',
-            sprintf('Total issues resolved: **%s**', $this->getNumberOfIssues($issues)),
-            sprintf('Total pull requests resolved: **%s**', $this->getNumberOfPullRequests($issues)),
-            sprintf('Total contributors: **%s**', $this->getNumberOfContributors($issues)),
+            sprintf('- Total issues resolved: **%s**', $this->getNumberOfIssues($issues)),
+            sprintf('- Total pull requests resolved: **%s**', $this->getNumberOfPullRequests($issues)),
+            sprintf('- Total contributors: **%s**', $this->getNumberOfContributors($issues)),
         ]);
 
         foreach ($issueGroups as $issueGroup) {

@@ -99,9 +99,9 @@ final class ChangelogGeneratorTest extends TestCase
             ->with([
                 '## 1.0',
                 '',
-                'Total issues resolved: **2**',
-                'Total pull requests resolved: **2**',
-                'Total contributors: **3**',
+                '- Total issues resolved: **2**',
+                '- Total pull requests resolved: **2**',
+                '- Total contributors: **3**',
             ]);
 
         $output->expects($this->at(1))

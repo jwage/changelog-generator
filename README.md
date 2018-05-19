@@ -19,9 +19,9 @@ Here is what an example changelog looks like. It was generated from the ``0.0.3`
 
 ### 0.0.3
 
-Total issues resolved: **7**
-Total pull requests resolved: **7**
-Total contributors: **1**
+- Total issues resolved: **7**
+- Total pull requests resolved: **7**
+- Total contributors: **1**
 
 #### Enhancement
 
