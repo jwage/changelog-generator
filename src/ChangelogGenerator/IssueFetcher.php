@@ -70,7 +70,7 @@ class IssueFetcher
 
     private function getNextUrl(Response $response) : ?string
     {
-        $links   = $response->getHeader('Link');
+        $links = $response->getHeader('Link');
 
         foreach ($links as $link) {
             $matches = [];
