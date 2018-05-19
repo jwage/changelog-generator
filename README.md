@@ -9,12 +9,12 @@ This library will generate a changelog markdown document from a GitHub milestone
 
 ## Features
 
-- Shows total issues, pull requests and contributors in a GitHub milestone.
-- Filter by GitHub labels.
-- Grouped by GitHub labels.
-- Write changelog to a file.
-- Multi-Project configuration.
-- Connects related pull requests and issues to reduce redundant lines in the changelog.
+- [Shows total issues, pull requests and contributors in a GitHub milestone](https://github.com/jwage/changelog-generator#003)
+- [Filter by GitHub labels](https://github.com/jwage/changelog-generator#filtering-by-labels)
+- [Grouped by GitHub labels](https://github.com/jwage/changelog-generator#003)
+- [Write changelog to a file](https://github.com/jwage/changelog-generator#write-to-file)
+- [Multi-Project configuration](https://github.com/jwage/changelog-generator#configuration-file)
+- [Connects related pull requests and issues to reduce redundant lines in the changelog](https://github.com/jwage/changelog-generator#connecting-issues--pull-requests)
 
 ## Installation
 
