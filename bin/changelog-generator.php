@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use ChangelogGenerator\ChangelogGenerator;
 use ChangelogGenerator\Command\GenerateChangelogCommand;
+use ChangelogGenerator\IssueClient;
 use ChangelogGenerator\IssueFactory;
 use ChangelogGenerator\IssueFetcher;
 use ChangelogGenerator\IssueGrouper;
@@ -35,8 +36,9 @@ if (!$autoloader) {
 }
 
 $client = new Client();
+$issueClient = new IssueClient($client);
 $issueFactory = new IssueFactory();
-$issueFetcher = new IssueFetcher($client);
+$issueFetcher = new IssueFetcher($issueClient);
 $issueRepository = new IssueRepository($issueFetcher, $issueFactory);
 $issueGrouper = new IssueGrouper();
 

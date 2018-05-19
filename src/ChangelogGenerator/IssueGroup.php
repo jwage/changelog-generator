@@ -12,9 +12,13 @@ class IssueGroup
     /** @var Issue[] */
     private $issues = [];
 
-    public function __construct(string $name)
+    /**
+     * @param Issue[] $issues
+     */
+    public function __construct(string $name, array $issues = [])
     {
-        $this->name = $name;
+        $this->name   = $name;
+        $this->issues = $issues;
     }
 
     public function getName() : string
