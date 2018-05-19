@@ -51,6 +51,8 @@ class ChangelogGenerator
                 $output->writeln($issue->render());
             }
         }
+
+        $output->writeln('');
     }
 
     /**
