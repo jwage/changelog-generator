@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use function count;
 use function sprintf;
 
-class Generator
+class ChangelogGenerator
 {
     /** @var IssueRepository */
     private $issueRepository;

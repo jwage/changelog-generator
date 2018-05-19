@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use ChangelogGenerator\ChangelogGenerator;
 use ChangelogGenerator\Command\GenerateChangelogCommand;
-use ChangelogGenerator\Generator;
 use ChangelogGenerator\IssueFactory;
 use ChangelogGenerator\IssueFetcher;
 use ChangelogGenerator\IssueGrouper;
@@ -40,7 +40,7 @@ $issueFetcher = new IssueFetcher($client);
 $issueRepository = new IssueRepository($issueFetcher, $issueFactory);
 $issueGrouper = new IssueGrouper();
 
-$generator = new Generator($issueRepository, $issueGrouper);
+$generator = new ChangelogGenerator($issueRepository, $issueGrouper);
 
 $application = new Application('Changelog Generator', Versions::getVersion('jwage/changelog-generator'));
 $application->add(new GenerateChangelogCommand($generator));

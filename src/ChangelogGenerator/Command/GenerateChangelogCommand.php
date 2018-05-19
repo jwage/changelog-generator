@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ChangelogGenerator\Command;
 
-use ChangelogGenerator\Generator;
+use ChangelogGenerator\ChangelogGenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -12,12 +12,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateChangelogCommand extends Command
 {
-    /** @var Generator */
-    private $generator;
+    /** @var ChangelogGenerator */
+    private $changelogGenerator;
 
-    public function __construct(Generator $generator)
+    public function __construct(ChangelogGenerator $changelogGenerator)
     {
-        $this->generator = $generator;
+        $this->changelogGenerator = $changelogGenerator;
 
         parent::__construct();
     }
@@ -60,6 +60,6 @@ EOT
         $repository = $input->getOption('repository');
         $milestone  = $input->getOption('milestone');
 
-        $this->generator->generate($user, $repository, $milestone, $output);
+        $this->changelogGenerator->generate($user, $repository, $milestone, $output);
     }
 }
