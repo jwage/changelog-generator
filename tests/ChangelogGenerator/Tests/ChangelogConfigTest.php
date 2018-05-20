@@ -70,6 +70,20 @@ final class ChangelogConfigTest extends TestCase
         self::assertEquals('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed', $this->changelogConfig->getMilestoneIssuesUrl(''));
     }
 
+    public function testIsValid() : void
+    {
+        self::assertTrue($this->changelogConfig->isValid());
+
+        $changelogConfig = new ChangelogConfig(
+            '',
+            $this->repository,
+            $this->milestone,
+            $this->labels
+        );
+
+        self::assertFalse($changelogConfig->isValid());
+    }
+
     protected function setUp() : void
     {
         $this->user       = 'jwage';
