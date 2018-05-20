@@ -50,6 +50,25 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
+
+    public function testGenerateInvalidConfig() : void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('You must pass a config file with the --config option or manually specify the --user --repository and --milestone options.');
+
+        $input = new ArrayInput(['command' => 'generate']);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
+
+        $this->changelogGenerator->expects($this->never())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
+
     public function testGenerateFile() : void
     {
         $input = new ArrayInput([

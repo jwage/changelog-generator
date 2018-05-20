@@ -31,7 +31,7 @@ class ChangelogConfig
         string $user,
         string $repository,
         string $milestone,
-        array $labels
+        array $labels = []
     ) {
         $this->user       = $user;
         $this->repository = $repository;
@@ -96,5 +96,10 @@ class ChangelogConfig
         ));
 
         return sprintf('%s/search/issues?q=%s', self::ROOT_URL, $query);
+    }
+
+    public function isValid() : bool
+    {
+        return $this->user !== '' && $this->repository !== '' && $this->milestone !== '';
     }
 }

@@ -114,10 +114,16 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
+        $changelogConfig = $this->getChangelogConfig($input);
+
+        if (! $changelogConfig->isValid()) {
+            throw new InvalidArgumentException('You must pass a config file with the --config option or manually specify the --user --repository and --milestone options.');
+        }
+
         $changelogOutput = $this->getChangelogOutput($input, $output);
 
         $this->changelogGenerator->generate(
-            $this->getChangelogConfig($input),
+            $changelogConfig,
             $changelogOutput
         );
 
@@ -136,9 +142,9 @@ EOT
 
     private function getChangelogConfig(InputInterface $input) : ChangelogConfig
     {
-        $user       = $input->getOption('user');
-        $repository = $input->getOption('repository');
-        $milestone  = $input->getOption('milestone');
+        $user       = (string) $input->getOption('user');
+        $repository = (string) $input->getOption('repository');
+        $milestone  = (string) $input->getOption('milestone');
         $labels     = $input->getOption('label');
 
         $changelogConfig = $this->loadConfigFile($input);
