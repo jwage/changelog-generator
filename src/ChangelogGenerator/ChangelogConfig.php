@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace ChangelogGenerator;
 
+use function array_merge;
 use function sprintf;
 use function str_replace;
 use function urlencode;
 
 class ChangelogConfig
 {
-    private const ROOT_URL = 'https://api.github.com';
+    private const DEFAULT_ROOT_GITHUB_URL = 'https://api.github.com';
 
     /** @var string */
     private $user;
@@ -24,19 +25,25 @@ class ChangelogConfig
     /** @var string[] */
     private $labels;
 
+    /** @var mixed[] */
+    private $options = ['rootGitHubUrl' => self::DEFAULT_ROOT_GITHUB_URL];
+
     /**
      * @param string[] $labels
+     * @param mixed[]  $options
      */
     public function __construct(
         string $user,
         string $repository,
         string $milestone,
-        array $labels = []
+        array $labels = [],
+        array $options = []
     ) {
         $this->user       = $user;
         $this->repository = $repository;
         $this->milestone  = $milestone;
         $this->labels     = $labels;
+        $this->options    = array_merge($this->options, $options);
     }
 
     public function getUser() : string
@@ -85,6 +92,22 @@ class ChangelogConfig
         $this->labels = $labels;
     }
 
+    /**
+     * @return mixed[]
+     */
+    public function getOptions() : array
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param mixed[] $options
+     */
+    public function setOptions(array $options) : void
+    {
+        $this->options = $options;
+    }
+
     public function getMilestoneIssuesUrl(string $label) : string
     {
         $query = urlencode(sprintf(
@@ -95,11 +118,16 @@ class ChangelogConfig
             $label !== '' ? ' label:' . $label : ''
         ));
 
-        return sprintf('%s/search/issues?q=%s', self::ROOT_URL, $query);
+        return sprintf('%s/search/issues?q=%s', $this->getRootGitHubUrl(), $query);
     }
 
     public function isValid() : bool
     {
         return $this->user !== '' && $this->repository !== '' && $this->milestone !== '';
+    }
+
+    private function getRootGitHubUrl() : string
+    {
+        return $this->options['rootGitHubUrl'] ?? self::DEFAULT_ROOT_GITHUB_URL;
     }
 }

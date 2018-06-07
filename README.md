@@ -15,6 +15,7 @@ This library will generate a changelog markdown document from a GitHub milestone
 - [Write changelog to a file](https://github.com/jwage/changelog-generator#write-to-file)
 - [Multi-Project configuration](https://github.com/jwage/changelog-generator#configuration-file)
 - [Connects related pull requests and issues to reduce redundant lines in the changelog](https://github.com/jwage/changelog-generator#connecting-issues--pull-requests)
+- [GitHub Enterprise Support](https://github.com/jwage/changelog-generator#github-enterprise-support)
 
 ## Installation
 
@@ -124,3 +125,26 @@ By default if you name your config file `changelog-generator-config.php`, the ch
 if no `--config` option is passed.
 
     $ ./vendor/bin/changelog-generator generate
+
+## GitHub Enterprise Support
+
+You can configure the URL of your GitHub instance by using the `rootGitHubUrl` option. In your `config.php` you can
+pass a 5th argument to `ChangelogConfig` that contains an array of options:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use ChangelogGenerator\ChangelogConfig;
+
+return [
+    'changelog-generator' => new ChangelogConfig(
+        'jwage',
+        'changelog-generator',
+        '0.0.3',
+        ['Enhancement', 'Bug'],
+        ['rootGitHubUrl' => 'https://git.mycompany.com/api/v3']
+    ),
+];
+```
