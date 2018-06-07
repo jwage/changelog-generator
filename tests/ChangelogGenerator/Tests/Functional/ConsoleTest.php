@@ -17,6 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use function sprintf;
 use function sys_get_temp_dir;
+use function tempnam;
 use function unlink;
 
 final class ConsoleTest extends TestCase
@@ -102,7 +103,7 @@ final class ConsoleTest extends TestCase
             '--user'        => 'jwage',
             '--repository'  => 'changelog-generator',
             '--milestone'   => '1.0',
-            '--file'        => 'CHANGELOG.md',
+            '--file'        => tempnam(sys_get_temp_dir(), 'CHANGELOG.md'),
         ]);
 
         $output       = $this->createMock(OutputInterface::class);
@@ -128,7 +129,7 @@ final class ConsoleTest extends TestCase
             '--user'        => 'jwage',
             '--repository'  => 'changelog-generator',
             '--milestone'   => '1.0',
-            '--file'        => 'CHANGELOG.md',
+            '--file'        => tempnam(sys_get_temp_dir(), 'CHANGELOG.md'),
             '--append'      => true,
         ]);
 
@@ -155,7 +156,7 @@ final class ConsoleTest extends TestCase
             '--user'        => 'jwage',
             '--repository'  => 'changelog-generator',
             '--milestone'   => '1.0',
-            '--file'        => 'CHANGELOG.md',
+            '--file'        => tempnam(sys_get_temp_dir(), 'CHANGELOG.md'),
             '--prepend'     => true,
         ]);
 
@@ -182,7 +183,7 @@ final class ConsoleTest extends TestCase
             '--user'        => 'jwage',
             '--repository'  => 'changelog-generator',
             '--milestone'   => '1.0',
-            '--file'        => 'CHANGELOG.md',
+            '--file'        => tempnam(sys_get_temp_dir(), 'CHANGELOG.md'),
             '--prepend'     => true,
         ]);
 

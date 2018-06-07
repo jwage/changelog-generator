@@ -22,6 +22,7 @@ use function fopen;
 use function getcwd;
 use function is_array;
 use function sprintf;
+use function touch;
 
 class GenerateChangelogCommand extends Command
 {
@@ -135,6 +136,10 @@ EOT
 
         if (! ($changelogOutput instanceof BufferedOutput)) {
             return;
+        }
+
+        if (! file_exists($file)) {
+            touch($file);
         }
 
         file_put_contents($file, $changelogOutput->fetch() . file_get_contents($file));
