@@ -100,15 +100,15 @@ declare(strict_types=1);
 use ChangelogGenerator\ChangelogConfig;
 
 return [
-    'changelog-generator' => new ChangelogConfig(
-        'jwage',
-        'changelog-generator',
-        '0.0.3',
-        ['Enhancement', 'Bug']
-    ),
-    'another-project' => new ChangelogConfig(
+    'changelog-generator' => (new ChangelogConfig())
+        ->setUser('jwage')
+        ->setRepository('changelog-generator')
+        ->setMilestone('0.0.4')
+        ->setLabels(['Enhancement', 'Bug'])
+    ,
+    'another-project' => (new ChangelogConfig())
         // ...
-    )
+    ,
 ];
 ```
 
@@ -139,12 +139,12 @@ declare(strict_types=1);
 use ChangelogGenerator\ChangelogConfig;
 
 return [
-    'changelog-generator' => new ChangelogConfig(
-        'jwage',
-        'changelog-generator',
-        '0.0.3',
-        ['Enhancement', 'Bug'],
-        ['rootGitHubUrl' => 'https://git.mycompany.com/api/v3']
-    ),
+    'changelog-generator' => (new ChangelogConfig())
+        ->setUser('jwage')
+        ->setRepository('changelog-generator')
+        ->setMilestone('0.0.3')
+        ->setLabels(['Enhancement', 'Bug'],)
+        ->setOption('rootGitHubUrl', 'https://git.mycompany.com/api/v3')
+    ,
 ];
 ```

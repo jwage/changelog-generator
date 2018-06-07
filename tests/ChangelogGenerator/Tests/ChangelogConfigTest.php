@@ -72,6 +72,15 @@ final class ChangelogConfigTest extends TestCase
         self::assertEquals(['rootGitHubUrl' => 'https://git.mycompany.com/api/v3'], $this->changelogConfig->getOptions());
     }
 
+    public function testGetSetOption() : void
+    {
+        self::assertNull($this->changelogConfig->getOption('test'));
+
+        $this->changelogConfig->setOption('test', true);
+
+        self::assertTrue($this->changelogConfig->getOption('test'));
+    }
+
     public function testGetMilestoneIssuesUrl() : void
     {
         self::assertEquals('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed+label%3AEnhancement', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));

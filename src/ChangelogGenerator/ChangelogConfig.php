@@ -33,9 +33,9 @@ class ChangelogConfig
      * @param mixed[]  $options
      */
     public function __construct(
-        string $user,
-        string $repository,
-        string $milestone,
+        string $user = '',
+        string $repository = '',
+        string $milestone = '',
         array $labels = [],
         array $options = []
     ) {
@@ -51,9 +51,11 @@ class ChangelogConfig
         return $this->user;
     }
 
-    public function setUser(string $user) : void
+    public function setUser(string $user) : self
     {
         $this->user = $user;
+
+        return $this;
     }
 
     public function getRepository() : string
@@ -61,9 +63,11 @@ class ChangelogConfig
         return $this->repository;
     }
 
-    public function setRepository(string $repository) : void
+    public function setRepository(string $repository) : self
     {
         $this->repository = $repository;
+
+        return $this;
     }
 
     public function getMilestone() : string
@@ -71,9 +75,11 @@ class ChangelogConfig
         return $this->milestone;
     }
 
-    public function setMilestone(string $milestone) : void
+    public function setMilestone(string $milestone) : self
     {
         $this->milestone = $milestone;
+
+        return $this;
     }
 
     /**
@@ -87,9 +93,11 @@ class ChangelogConfig
     /**
      * @param string[] $labels
      */
-    public function setLabels(array $labels) : void
+    public function setLabels(array $labels) : self
     {
         $this->labels = $labels;
+
+        return $this;
     }
 
     /**
@@ -103,9 +111,29 @@ class ChangelogConfig
     /**
      * @param mixed[] $options
      */
-    public function setOptions(array $options) : void
+    public function setOptions(array $options) : self
     {
         $this->options = $options;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOption(string $name)
+    {
+        return $this->options[$name] ?? null;
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function setOption(string $name, $value) : self
+    {
+        $this->options[$name] = $value;
+
+        return $this;
     }
 
     public function getMilestoneIssuesUrl(string $label) : string

@@ -15,9 +15,11 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
+use function file_exists;
 use function sprintf;
 use function sys_get_temp_dir;
 use function tempnam;
+use function uniqid;
 use function unlink;
 
 final class ConsoleTest extends TestCase
@@ -203,6 +205,41 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
+    public function testGenerateFilePrependCreatesFileThatDoesNotExist() : void
+    {
+        $file = sprintf('%s/%sCHANGELOG.md', sys_get_temp_dir(), uniqid());
+
+        $input = new ArrayInput([
+            'command'       => 'generate',
+            '--user'        => 'jwage',
+            '--repository'  => 'changelog-generator',
+            '--milestone'   => '1.0',
+            '--file'        => $file,
+            '--prepend'     => true,
+        ]);
+
+        $output         = $this->createMock(OutputInterface::class);
+        $bufferedOutput = $this->createMock(BufferedOutput::class);
+
+        $this->generateChangelogCommand->expects($this->once())
+            ->method('createOutput')
+            ->willReturn($bufferedOutput);
+
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
+
+        $this->changelogGenerator->expects($this->once())
+            ->method('generate')
+            ->with($changelogConfig, $bufferedOutput);
+
+        $this->application->run($input, $output);
+
+        $exists = file_exists($file);
+
+        unlink($file);
+
+        self::assertTrue($exists);
+    }
+
     public function testGenerateLabel() : void
     {
         $input = new ArrayInput([
@@ -347,7 +384,6 @@ final class ConsoleTest extends TestCase
 
         $this->application->run($input, $output);
     }
-
 
     public function testGenerateConfigOverrideNoLabels() : void
     {
