@@ -110,6 +110,12 @@ EOT
                 InputOption::VALUE_REQUIRED,
                 'The project from the configuration to generate a changelog for.'
             )
+            ->addOption(
+                'include-open',
+                'a',
+                InputOption::VALUE_NONE,
+                'Whether to also include open issues.'
+            )
         ;
     }
 
@@ -147,10 +153,11 @@ EOT
 
     private function getChangelogConfig(InputInterface $input) : ChangelogConfig
     {
-        $user       = (string) $input->getOption('user');
-        $repository = (string) $input->getOption('repository');
-        $milestone  = (string) $input->getOption('milestone');
-        $labels     = $input->getOption('label');
+        $user        = (string) $input->getOption('user');
+        $repository  = (string) $input->getOption('repository');
+        $milestone   = (string) $input->getOption('milestone');
+        $labels      = $input->getOption('label');
+        $includeOpen = (bool) $input->getOption('include-open');
 
         $changelogConfig = $this->loadConfigFile($input);
 
@@ -162,7 +169,8 @@ EOT
             $user,
             $repository,
             $milestone,
-            $labels
+            $labels,
+            $includeOpen
         );
     }
 

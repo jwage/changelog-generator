@@ -25,6 +25,9 @@ class ChangelogConfig
     /** @var string[] */
     private $labels;
 
+    /** @var bool */
+    private $includeOpen;
+
     /** @var mixed[] */
     private $options = ['rootGitHubUrl' => self::DEFAULT_ROOT_GITHUB_URL];
 
@@ -37,13 +40,15 @@ class ChangelogConfig
         string $repository = '',
         string $milestone = '',
         array $labels = [],
+        bool $includeOpen = false,
         array $options = []
     ) {
-        $this->user       = $user;
-        $this->repository = $repository;
-        $this->milestone  = $milestone;
-        $this->labels     = $labels;
-        $this->options    = array_merge($this->options, $options);
+        $this->user        = $user;
+        $this->repository  = $repository;
+        $this->milestone   = $milestone;
+        $this->labels      = $labels;
+        $this->includeOpen = $includeOpen;
+        $this->options     = array_merge($this->options, $options);
     }
 
     public function getUser() : string
@@ -100,6 +105,18 @@ class ChangelogConfig
         return $this;
     }
 
+    public function shouldIncludeOpen() : bool
+    {
+        return $this->includeOpen;
+    }
+
+    public function setIncludeOpen(bool $includeOpen) : self
+    {
+        $this->includeOpen = $includeOpen;
+
+        return $this;
+    }
+
     /**
      * @return mixed[]
      */
@@ -139,10 +156,11 @@ class ChangelogConfig
     public function getMilestoneIssuesUrl(string $label) : string
     {
         $query = urlencode(sprintf(
-            'milestone:"%s" repo:%s/%s state:closed%s',
+            'milestone:"%s" repo:%s/%s%s%s',
             str_replace('"', '\"', $this->milestone),
             $this->user,
             $this->repository,
+            $this->includeOpen ? '' : ' state:closed',
             $label !== '' ? ' label:' . $label : ''
         ));
 

@@ -21,6 +21,9 @@ final class ChangelogConfigTest extends TestCase
     /** @var string[] */
     private $labels = [];
 
+    /** @var bool */
+    private $includeOpen = false;
+
     /** @var string[] */
     private $options = [];
 
@@ -61,6 +64,15 @@ final class ChangelogConfigTest extends TestCase
         $this->changelogConfig->setLabels(['Improvement']);
 
         self::assertEquals(['Improvement'], $this->changelogConfig->getLabels());
+    }
+
+    public function testGetSetIncludeOpen() : void
+    {
+        self::assertEquals($this->includeOpen, $this->changelogConfig->shouldIncludeOpen());
+
+        $this->changelogConfig->setIncludeOpen(true);
+
+        self::assertTrue($this->changelogConfig->shouldIncludeOpen());
     }
 
     public function testGetSetOptions() : void
@@ -105,6 +117,13 @@ final class ChangelogConfigTest extends TestCase
         self::assertEquals('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed+label%3AEnhancement', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
     }
 
+    public function testGetMilestoneIssuesUrlWithOpenIncluded() : void
+    {
+        $this->changelogConfig->setIncludeOpen(true);
+
+        self::assertEquals('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+label%3AEnhancement', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
+    }
+
     public function testIsValid() : void
     {
         self::assertTrue($this->changelogConfig->isValid());
@@ -114,6 +133,7 @@ final class ChangelogConfigTest extends TestCase
             $this->repository,
             $this->milestone,
             $this->labels,
+            $this->includeOpen,
             $this->options
         );
 
@@ -133,6 +153,7 @@ final class ChangelogConfigTest extends TestCase
             $this->repository,
             $this->milestone,
             $this->labels,
+            $this->includeOpen,
             $this->options
         );
     }
