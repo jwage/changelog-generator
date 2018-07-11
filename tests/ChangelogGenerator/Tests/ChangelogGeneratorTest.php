@@ -44,57 +44,57 @@ final class ChangelogGeneratorTest extends TestCase
 
         $changelogConfig = new ChangelogConfig($user, $repository, $milestone, []);
 
-        $this->issueRepository->expects($this->once())
+        $this->issueRepository->expects(self::once())
             ->method('getMilestoneIssues')
             ->with($changelogConfig)
             ->willReturn($milestoneIssues);
 
-        $this->issueGrouper->expects($this->once())
+        $this->issueGrouper->expects(self::once())
             ->method('groupIssues')
             ->with($milestoneIssues)
             ->willReturn($issueGroups);
 
-        $issueGroup->expects($this->once())
+        $issueGroup->expects(self::once())
             ->method('getName')
             ->willReturn('Enhancement');
 
-        $issueGroup->expects($this->once())
+        $issueGroup->expects(self::once())
             ->method('getIssues')
             ->willReturn([$issue1, $issue2]);
 
-        $issue1->expects($this->once())
+        $issue1->expects(self::once())
             ->method('render')
             ->willReturn('Issue #1');
 
-        $issue1->expects($this->once())
+        $issue1->expects(self::once())
             ->method('getUser')
             ->willReturn('jwage');
 
-        $issue2->expects($this->once())
+        $issue2->expects(self::once())
             ->method('render')
             ->willReturn('Issue #2');
 
-        $issue2->expects($this->once())
+        $issue2->expects(self::once())
             ->method('getUser')
             ->willReturn('jwage');
 
-        $pullRequest1->expects($this->any())
+        $pullRequest1->expects(self::any())
             ->method('isPullRequest')
             ->willReturn(true);
 
-        $pullRequest1->expects($this->once())
+        $pullRequest1->expects(self::once())
             ->method('getUser')
             ->willReturn('Ocramius');
 
-        $pullRequest2->expects($this->any())
+        $pullRequest2->expects(self::any())
             ->method('isPullRequest')
             ->willReturn(true);
 
-        $pullRequest2->expects($this->once())
+        $pullRequest2->expects(self::once())
             ->method('getUser')
             ->willReturn('romanb');
 
-        $output->expects($this->at(0))
+        $output->expects(self::at(0))
             ->method('writeln')
             ->with([
                 '## 1.0',
@@ -104,7 +104,7 @@ final class ChangelogGeneratorTest extends TestCase
                 '- Total contributors: **3**',
             ]);
 
-        $output->expects($this->at(1))
+        $output->expects(self::at(1))
             ->method('writeln')
             ->with([
                 '',
@@ -112,7 +112,7 @@ final class ChangelogGeneratorTest extends TestCase
                 '',
             ]);
 
-        $output->expects($this->at(2))
+        $output->expects(self::at(2))
             ->method('writeln')
             ->with('Issue #1');
 

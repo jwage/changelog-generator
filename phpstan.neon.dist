@@ -2,6 +2,7 @@ parameters:
     level: 7
     paths:
         - %currentWorkingDirectory%/src
+        - %currentWorkingDirectory%/tests
 
 includes:
     - vendor/phpstan/phpstan-deprecation-rules/rules.neon

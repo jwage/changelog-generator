@@ -23,12 +23,12 @@ final class IssueFetcherTest extends TestCase
         $response1 = new IssueClientResponse(['items' => [1]], 'https://www.google.com');
         $response2 = new IssueClientResponse(['items' => [2]], null);
 
-        $this->issueClient->expects($this->at(0))
+        $this->issueClient->expects(self::at(0))
             ->method('execute')
             ->with('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed')
             ->willReturn($response1);
 
-        $this->issueClient->expects($this->at(1))
+        $this->issueClient->expects(self::at(1))
             ->method('execute')
             ->with('https://www.google.com')
             ->willReturn($response2);
