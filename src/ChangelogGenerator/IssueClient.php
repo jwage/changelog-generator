@@ -37,7 +37,7 @@ class IssueClient
         foreach ($links as $link) {
             $matches = [];
 
-            if (preg_match('#<(?P<url>.*)>; rel="next"#', $link, $matches)) {
+            if (preg_match('#<(?P<url>.*)>; rel="next"#', $link, $matches) === 1) {
                 return $matches['url'];
             }
         }

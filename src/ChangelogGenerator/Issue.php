@@ -32,10 +32,10 @@ class Issue
     /** @var bool */
     private $isPullRequest;
 
-    /** @var Issue */
+    /** @var Issue|null */
     private $linkedPullRequest;
 
-    /** @var Issue */
+    /** @var Issue|null */
     private $linkedIssue;
 
     /**
