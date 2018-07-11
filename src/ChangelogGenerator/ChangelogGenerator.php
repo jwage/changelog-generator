@@ -30,7 +30,7 @@ class ChangelogGenerator
         OutputInterface $output
     ) : void {
         $issues      = $this->issueRepository->getMilestoneIssues($changelogConfig);
-        $issueGroups = $this->issueGrouper->groupIssues($issues);
+        $issueGroups = $this->issueGrouper->groupIssues($issues, $changelogConfig);
 
         $output->writeln([
             sprintf('## %s', $changelogConfig->getMilestone()),
