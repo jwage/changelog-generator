@@ -16,7 +16,7 @@ final class IssueFactoryTest extends TestCase
     {
         $issue = $this->issueFactory->create([
             'number' => 1,
-            'title' => 'Test Title',
+            'title' => '[Test] _ Title',
             'body' => 'Test Body',
             'html_url' => 'https://google.com',
             'user' => ['login' => 'jwage'],
@@ -24,7 +24,7 @@ final class IssueFactoryTest extends TestCase
         ]);
 
         self::assertEquals(1, $issue->getNumber());
-        self::assertEquals('Test Title', $issue->getTitle());
+        self::assertEquals('&#91;Test&#93; &#95; Title', $issue->getTitle());
         self::assertEquals('Test Body', $issue->getBody());
         self::assertEquals('https://google.com', $issue->getUrl());
         self::assertEquals('jwage', $issue->getUser());

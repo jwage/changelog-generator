@@ -31,7 +31,7 @@ class IssueFactory
     private function getTitle(string $title) : string
     {
         $title = htmlentities($title, ENT_COMPAT, 'UTF-8');
-        $title = str_replace(['[', ']', '_'], ['&#91;', '&#92;', '&#95;'], $title);
+        $title = str_replace(['[', ']', '_'], ['&#91;', '&#93;', '&#95;'], $title);
 
         return $title;
     }
