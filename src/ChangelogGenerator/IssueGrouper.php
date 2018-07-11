@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace ChangelogGenerator;
 
 use function array_filter;
+use function array_intersect;
+use function count;
 use function implode;
 use function strpos;
 
@@ -15,11 +17,11 @@ class IssueGrouper
      *
      * @return IssueGroup[]
      */
-    public function groupIssues(array $issues) : array
+    public function groupIssues(array $issues, ChangelogConfig $changelogConfig) : array
     {
         $this->linkIssues($issues);
 
-        return $this->groupIssuesByLabels($issues);
+        return $this->groupIssuesByLabels($issues, $changelogConfig);
     }
 
     /**
@@ -27,12 +29,12 @@ class IssueGrouper
      *
      * @return IssueGroup[]
      */
-    private function groupIssuesByLabels(array $issues) : array
+    private function groupIssuesByLabels(array $issues, ChangelogConfig $changelogConfig) : array
     {
         $issueGroups = [];
 
         foreach ($this->getIssuesToGroup($issues) as $issue) {
-            $groupName = implode(',', $issue->getLabels());
+            $groupName = $this->generateIssueGroupName($issue, $changelogConfig);
 
             if (! isset($issueGroups[$groupName])) {
                 $issueGroups[$groupName] = new IssueGroup($groupName);
@@ -42,6 +44,19 @@ class IssueGrouper
         }
 
         return $issueGroups;
+    }
+
+    private function generateIssueGroupName(Issue $issue, ChangelogConfig $changelogConfig) : string
+    {
+        $labelFilters = $changelogConfig->getLabels();
+
+        if (count($labelFilters) === 0) {
+            $labels = $issue->getLabels();
+        } else {
+            $labels = array_intersect($issue->getLabels(), $labelFilters);
+        }
+
+        return implode(',', $labels);
     }
 
     /**
