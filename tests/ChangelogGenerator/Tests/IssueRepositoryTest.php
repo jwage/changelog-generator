@@ -26,7 +26,7 @@ final class IssueRepositoryTest extends TestCase
     {
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
 
-        $this->issueFetcher->expects($this->once())
+        $this->issueFetcher->expects(self::once())
             ->method('fetchMilestoneIssues')
             ->with($changelogConfig)
             ->willReturn([
@@ -51,7 +51,7 @@ final class IssueRepositoryTest extends TestCase
         $issue1 = $this->createMock(Issue::class);
         $issue2 = $this->createMock(Issue::class);
 
-        $this->issueFactory->expects($this->at(0))
+        $this->issueFactory->expects(self::at(0))
             ->method('create')
             ->with([
                 'number' => 1,
@@ -63,7 +63,7 @@ final class IssueRepositoryTest extends TestCase
             ])
             ->willReturn($issue1);
 
-        $this->issueFactory->expects($this->at(1))
+        $this->issueFactory->expects(self::at(1))
             ->method('create')
             ->with([
                 'number' => 2,

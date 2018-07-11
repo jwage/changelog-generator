@@ -21,16 +21,16 @@ final class IssueClientTest extends TestCase
     {
         $response = $this->createMock(Response::class);
 
-        $this->client->expects($this->once())
+        $this->client->expects(self::once())
             ->method('request')
             ->with('GET', 'https://www.google.com')
             ->willReturn($response);
 
-        $response->expects($this->once())
+        $response->expects(self::once())
             ->method('getBody')
             ->willReturn('{"test": true}');
 
-        $response->expects($this->once())
+        $response->expects(self::once())
             ->method('getHeader')
             ->with('Link')
             ->willReturn(['<https://www.google.com?next>; rel="next", <https://www.google.com?last>; rel="last"']);
@@ -45,16 +45,16 @@ final class IssueClientTest extends TestCase
     {
         $response = $this->createMock(Response::class);
 
-        $this->client->expects($this->once())
+        $this->client->expects(self::once())
             ->method('request')
             ->with('GET', 'https://www.google.com')
             ->willReturn($response);
 
-        $response->expects($this->once())
+        $response->expects(self::once())
             ->method('getBody')
             ->willReturn('{"test": true}');
 
-        $response->expects($this->once())
+        $response->expects(self::once())
             ->method('getHeader')
             ->with('Link')
             ->willReturn([]);

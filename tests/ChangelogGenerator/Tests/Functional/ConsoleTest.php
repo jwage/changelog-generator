@@ -46,7 +46,7 @@ final class ConsoleTest extends TestCase
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $output);
 
@@ -65,7 +65,7 @@ final class ConsoleTest extends TestCase
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
 
-        $this->changelogGenerator->expects($this->never())
+        $this->changelogGenerator->expects(self::never())
             ->method('generate')
             ->with($changelogConfig, $output);
 
@@ -85,13 +85,13 @@ final class ConsoleTest extends TestCase
         $output       = $this->createMock(OutputInterface::class);
         $streamOutput = $this->createMock(StreamOutput::class);
 
-        $this->generateChangelogCommand->expects($this->once())
+        $this->generateChangelogCommand->expects(self::once())
             ->method('createOutput')
             ->willReturn($streamOutput);
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $streamOutput);
 
@@ -111,13 +111,13 @@ final class ConsoleTest extends TestCase
         $output       = $this->createMock(OutputInterface::class);
         $streamOutput = $this->createMock(StreamOutput::class);
 
-        $this->generateChangelogCommand->expects($this->once())
+        $this->generateChangelogCommand->expects(self::once())
             ->method('createOutput')
             ->willReturn($streamOutput);
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $streamOutput);
 
@@ -138,13 +138,13 @@ final class ConsoleTest extends TestCase
         $output       = $this->createMock(OutputInterface::class);
         $streamOutput = $this->createMock(StreamOutput::class);
 
-        $this->generateChangelogCommand->expects($this->once())
+        $this->generateChangelogCommand->expects(self::once())
             ->method('createOutput')
             ->willReturn($streamOutput);
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $streamOutput);
 
@@ -165,13 +165,13 @@ final class ConsoleTest extends TestCase
         $output         = $this->createMock(OutputInterface::class);
         $bufferedOutput = $this->createMock(BufferedOutput::class);
 
-        $this->generateChangelogCommand->expects($this->once())
+        $this->generateChangelogCommand->expects(self::once())
             ->method('createOutput')
             ->willReturn($bufferedOutput);
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $bufferedOutput);
 
@@ -192,13 +192,13 @@ final class ConsoleTest extends TestCase
         $output       = $this->createMock(OutputInterface::class);
         $streamOutput = $this->createMock(StreamOutput::class);
 
-        $this->generateChangelogCommand->expects($this->once())
+        $this->generateChangelogCommand->expects(self::once())
             ->method('createOutput')
             ->willReturn($streamOutput);
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $streamOutput);
 
@@ -221,13 +221,13 @@ final class ConsoleTest extends TestCase
         $output         = $this->createMock(OutputInterface::class);
         $bufferedOutput = $this->createMock(BufferedOutput::class);
 
-        $this->generateChangelogCommand->expects($this->once())
+        $this->generateChangelogCommand->expects(self::once())
             ->method('createOutput')
             ->willReturn($bufferedOutput);
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $bufferedOutput);
 
@@ -254,7 +254,7 @@ final class ConsoleTest extends TestCase
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', ['Enhancement', 'Bug']);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $output);
 
@@ -277,7 +277,7 @@ final class ConsoleTest extends TestCase
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', ['Enhancement', 'Bug']);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $output);
 
@@ -302,7 +302,7 @@ final class ConsoleTest extends TestCase
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', ['Enhancement', 'Bug']);
 
-        $this->changelogGenerator->expects($this->never())
+        $this->changelogGenerator->expects(self::never())
             ->method('generate')
             ->with($changelogConfig, $output);
 
@@ -329,7 +329,7 @@ final class ConsoleTest extends TestCase
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', ['Enhancement', 'Bug']);
 
-        $this->changelogGenerator->expects($this->never())
+        $this->changelogGenerator->expects(self::never())
             ->method('generate')
             ->with($changelogConfig, $output);
 
@@ -355,7 +355,7 @@ final class ConsoleTest extends TestCase
 
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', ['Enhancement', 'Bug']);
 
-        $this->changelogGenerator->expects($this->never())
+        $this->changelogGenerator->expects(self::never())
             ->method('generate')
             ->with($changelogConfig, $output);
 
@@ -378,7 +378,7 @@ final class ConsoleTest extends TestCase
 
         $changelogConfig = new ChangelogConfig('doctrine', 'migrations', '2.0', ['Improvement', 'Bug'], false);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $output);
 
@@ -402,7 +402,7 @@ final class ConsoleTest extends TestCase
 
         $changelogConfig = new ChangelogConfig('doctrine', 'migrations', '2.0', ['Improvement', 'Bug'], true);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $output);
 
@@ -426,7 +426,7 @@ final class ConsoleTest extends TestCase
 
         $changelogConfig = new ChangelogConfig('doctrine', 'migrations', '2.0', ['Improvement', 'Bug'], true);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $output);
 
@@ -450,7 +450,7 @@ final class ConsoleTest extends TestCase
 
         $changelogConfig = new ChangelogConfig('doctrine', 'migrations', '2.0', ['Improvement', 'Bug'], false);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $output);
 
@@ -472,7 +472,7 @@ final class ConsoleTest extends TestCase
 
         $changelogConfig = new ChangelogConfig('doctrine', 'migrations', '2.0', ['Enhancement', 'Bug']);
 
-        $this->changelogGenerator->expects($this->once())
+        $this->changelogGenerator->expects(self::once())
             ->method('generate')
             ->with($changelogConfig, $output);
 
@@ -516,7 +516,7 @@ final class ConsoleTest extends TestCase
             ->setMethods(['fopen'])
             ->getMock();
 
-        $generateChangelogCommand->expects($this->once())
+        $generateChangelogCommand->expects(self::once())
             ->method('fopen')
             ->with($file, 'a+')
             ->willReturn(false);
