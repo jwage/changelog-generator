@@ -27,7 +27,7 @@ Or you can download the latest `changelog-generator.phar` file from the [release
 
 ## Example
 
-Here is what an example changelog looks like. It was generated from the ``0.0.3`` milestone in GitHub for this project:
+Here is what an example changelog looks like. It was generated from the `0.0.3` milestone in GitHub for this project:
 
 ### 0.0.3
 
@@ -83,9 +83,16 @@ of the pull request. When the user of the issue and pull request are different g
 
 ## Filtering by Labels
 
-You can filter the changelog by label names using the ``--label`` option:
+You can filter the changelog by label names using the `--label` option:
 
     $ ./vendor/bin/changelog-generator generate --user=doctrine --repository=migrations --milestone=2.0 --label=Enhancement --label=Bug
+
+## Including Open Issues & Pull Requests
+
+It can be convenient when preparing release notes for an upcoming release to include open issues and pull requests. For
+this you can use the `--include-open` option:
+
+    $ ./vendor/bin/changelog-generator generate --user=doctrine --repository=migrations --milestone=2.0 --include-open
 
 ## Configuration File
 
@@ -105,6 +112,7 @@ return [
         ->setRepository('changelog-generator')
         ->setMilestone('0.0.4')
         ->setLabels(['Enhancement', 'Bug'])
+        ->setIncludeOpen(true)
     ,
     'another-project' => (new ChangelogConfig())
         // ...
@@ -125,6 +133,11 @@ By default if you name your config file `changelog-generator-config.php`, the ch
 if no `--config` option is passed.
 
     $ ./vendor/bin/changelog-generator generate
+
+You can override options provided by the `ChangelogConfig` object from the command line by passing options to the
+`generate` command:
+
+    $ ./vendor/bin/changelog-generator generate --include-open=0
 
 ## GitHub Enterprise Support
 

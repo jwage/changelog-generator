@@ -20,7 +20,9 @@ use function file_get_contents;
 use function file_put_contents;
 use function fopen;
 use function getcwd;
+use function in_array;
 use function is_array;
+use function is_string;
 use function sprintf;
 use function touch;
 
@@ -113,8 +115,9 @@ EOT
             ->addOption(
                 'include-open',
                 'a',
-                InputOption::VALUE_NONE,
-                'Whether to also include open issues.'
+                InputOption::VALUE_OPTIONAL,
+                'Whether to also include open issues.',
+                ''
             )
         ;
     }
@@ -153,17 +156,17 @@ EOT
 
     private function getChangelogConfig(InputInterface $input) : ChangelogConfig
     {
-        $user        = (string) $input->getOption('user');
-        $repository  = (string) $input->getOption('repository');
-        $milestone   = (string) $input->getOption('milestone');
-        $labels      = $input->getOption('label');
-        $includeOpen = (bool) $input->getOption('include-open');
-
         $changelogConfig = $this->loadConfigFile($input);
 
         if ($changelogConfig !== null) {
             return $changelogConfig;
         }
+
+        $user        = (string) $input->getOption('user');
+        $repository  = (string) $input->getOption('repository');
+        $milestone   = (string) $input->getOption('milestone');
+        $labels      = $input->getOption('label');
+        $includeOpen = $this->getIncludeOpen($input);
 
         return new ChangelogConfig(
             $user,
@@ -298,10 +301,11 @@ EOT
 
     private function overrideChangelogConfig(InputInterface $input, ChangelogConfig $changelogConfig) : void
     {
-        $user       = $input->getOption('user');
-        $repository = $input->getOption('repository');
-        $milestone  = $input->getOption('milestone');
-        $labels     = $input->getOption('label');
+        $user        = $input->getOption('user');
+        $repository  = $input->getOption('repository');
+        $milestone   = $input->getOption('milestone');
+        $labels      = $input->getOption('label');
+        $includeOpen = $input->getOption('include-open');
 
         if ($user !== null) {
             $changelogConfig->setUser($user);
@@ -315,10 +319,36 @@ EOT
             $changelogConfig->setMilestone($milestone);
         }
 
-        if ($labels === []) {
+        if ($labels !== []) {
+            $changelogConfig->setLabels($labels);
+        }
+
+        if ($includeOpen === '') {
             return;
         }
 
-        $changelogConfig->setLabels($labels);
+        $changelogConfig->setIncludeOpen($this->getIncludeOpen($input));
+    }
+
+    private function getIncludeOpen(InputInterface $input) : bool
+    {
+        $includeOpen = $input->getOption('include-open');
+
+        // --include-open option not provided, default to false
+        if ($includeOpen === '') {
+            return false;
+        }
+
+        // --include-open option provided, but no value was given, default to true
+        if ($includeOpen === null) {
+            return true;
+        }
+
+        // --include-open option provided and value was provided
+        if (is_string($includeOpen) && in_array($includeOpen, ['1', 'true'], true)) {
+            return true;
+        }
+
+        return false;
     }
 }

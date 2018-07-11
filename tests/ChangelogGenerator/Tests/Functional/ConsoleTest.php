@@ -362,21 +362,93 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateConfigOverride() : void
+    public function testGenerateIncludeOpenOptionNotProvided() : void
     {
         $input = new ArrayInput([
-            'command'       => 'generate',
-            '--user'        => 'doctrine',
-            '--repository'  => 'migrations',
-            '--milestone'   => '2.0',
-            '--label'       => ['Improvement', 'Bug'],
-            '--config'      => __DIR__ . '/_files/config.php',
-            '--project'     => 'changelog-generator',
+            'command'        => 'generate',
+            '--user'         => 'doctrine',
+            '--repository'   => 'migrations',
+            '--milestone'    => '2.0',
+            '--label'        => ['Improvement', 'Bug'],
+            '--config'       => __DIR__ . '/_files/config.php',
+            '--project'      => 'changelog-generator',
         ]);
 
         $output = $this->createMock(OutputInterface::class);
 
-        $changelogConfig = new ChangelogConfig('doctrine', 'migrations', '2.0', ['Improvement', 'Bug']);
+        $changelogConfig = new ChangelogConfig('doctrine', 'migrations', '2.0', ['Improvement', 'Bug'], false);
+
+        $this->changelogGenerator->expects($this->once())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
+
+    public function testGenerateIncludeOpenDefault() : void
+    {
+        $input = new ArrayInput([
+            'command'        => 'generate',
+            '--user'         => 'doctrine',
+            '--repository'   => 'migrations',
+            '--milestone'    => '2.0',
+            '--label'        => ['Improvement', 'Bug'],
+            '--config'       => __DIR__ . '/_files/config.php',
+            '--project'      => 'changelog-generator',
+            '--include-open' => null,
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = new ChangelogConfig('doctrine', 'migrations', '2.0', ['Improvement', 'Bug'], true);
+
+        $this->changelogGenerator->expects($this->once())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
+
+    public function testGenerateIncludeOpenTrue() : void
+    {
+        $input = new ArrayInput([
+            'command'        => 'generate',
+            '--user'         => 'doctrine',
+            '--repository'   => 'migrations',
+            '--milestone'    => '2.0',
+            '--label'        => ['Improvement', 'Bug'],
+            '--config'       => __DIR__ . '/_files/config.php',
+            '--project'      => 'changelog-generator',
+            '--include-open' => '1',
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = new ChangelogConfig('doctrine', 'migrations', '2.0', ['Improvement', 'Bug'], true);
+
+        $this->changelogGenerator->expects($this->once())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
+
+    public function testGenerateIncludeOpenFalse() : void
+    {
+        $input = new ArrayInput([
+            'command'        => 'generate',
+            '--user'         => 'doctrine',
+            '--repository'   => 'migrations',
+            '--milestone'    => '2.0',
+            '--label'        => ['Improvement', 'Bug'],
+            '--config'       => __DIR__ . '/_files/config.php',
+            '--project'      => 'changelog-generator',
+            '--include-open' => '0',
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = new ChangelogConfig('doctrine', 'migrations', '2.0', ['Improvement', 'Bug'], false);
 
         $this->changelogGenerator->expects($this->once())
             ->method('generate')
