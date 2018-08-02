@@ -16,10 +16,10 @@
     },
     "require-dev": {
         "doctrine/coding-standard": "^4.0",
-        "phpstan/phpstan": "^0.10",
-        "phpstan/phpstan-deprecation-rules": "^0.10",
-        "phpstan/phpstan-phpunit": "^0.10",
-        "phpstan/phpstan-strict-rules": "^0.10",
+        "phpstan/phpstan": "^0.10.2",
+        "phpstan/phpstan-deprecation-rules": "^0.10.2",
+        "phpstan/phpstan-phpunit": "^0.10.2",
+        "phpstan/phpstan-strict-rules": "^0.10.2",
         "phpunit/phpunit": "^7.0"
     },
     "autoload": {
