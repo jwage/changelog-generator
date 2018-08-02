@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "de4a4900725493689a0c3018d458c297",
+    "content-hash": "b6cc9551c921f71f428ce2333407a664",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -1746,7 +1746,7 @@
         },
         {
             "name": "phpstan/phpstan-phpunit",
-            "version": "0.10",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan-phpunit.git",
@@ -1796,7 +1796,7 @@
         },
         {
             "name": "phpstan/phpstan-strict-rules",
-            "version": "0.10.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan-strict-rules.git",
@@ -3014,9 +3014,9 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": [],
-    "prefer-stable": false,
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^7.1"

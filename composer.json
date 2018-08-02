@@ -42,5 +42,7 @@
     },
     "bin": [
         "bin/changelog-generator"
-    ]
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
