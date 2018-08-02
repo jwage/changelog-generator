@@ -28,8 +28,14 @@ class ChangelogConfig
     /** @var bool */
     private $includeOpen;
 
+    /** @var bool */
+    private $includeDate = false;
+
     /** @var mixed[] */
-    private $options = ['rootGitHubUrl' => self::DEFAULT_ROOT_GITHUB_URL];
+    private $options = [
+        'rootGitHubUrl' => self::DEFAULT_ROOT_GITHUB_URL,
+        'dateFormat' => 'Y-m-d',
+    ];
 
     /**
      * @param string[] $labels
@@ -113,6 +119,18 @@ class ChangelogConfig
     public function setIncludeOpen(bool $includeOpen) : self
     {
         $this->includeOpen = $includeOpen;
+
+        return $this;
+    }
+
+    public function shouldIncludeDate() : bool
+    {
+        return $this->includeDate;
+    }
+
+    public function setIncludeDate(bool $includeDate) : self
+    {
+        $this->includeDate = $includeDate;
 
         return $this;
     }

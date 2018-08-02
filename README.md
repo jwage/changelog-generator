@@ -94,6 +94,12 @@ this you can use the `--include-open` option:
 
     $ ./vendor/bin/changelog-generator generate --user=doctrine --repository=migrations --milestone=2.0 --include-open
 
+## Including Date after the Milestone
+
+For a good changelog your like show the release date of each version. For this you can use the `--include-date` option:
+
+    $ ./vendor/bin/changelog-generator generate --user=doctrine --repository=migrations --milestone=2.0 --include-date
+
 ## Configuration File
 
 You can provide a PHP configuration file to the changelog generator if you don't want to provide the data manually each time.
@@ -113,6 +119,7 @@ return [
         ->setMilestone('0.0.4')
         ->setLabels(['Enhancement', 'Bug'])
         ->setIncludeOpen(true)
+        ->setIncludeDate(true)
     ,
     'another-project' => (new ChangelogConfig())
         // ...

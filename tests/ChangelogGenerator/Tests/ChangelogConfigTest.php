@@ -77,7 +77,7 @@ final class ChangelogConfigTest extends TestCase
 
     public function testGetSetOptions() : void
     {
-        self::assertEquals(['rootGitHubUrl' => 'https://api.github.com'], $this->changelogConfig->getOptions());
+        self::assertEquals(['rootGitHubUrl' => 'https://api.github.com', 'dateFormat' => 'Y-m-d'], $this->changelogConfig->getOptions());
 
         $this->changelogConfig->setOptions(['rootGitHubUrl' => 'https://git.mycompany.com/api/v3']);
 

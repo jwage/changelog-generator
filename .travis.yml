@@ -15,7 +15,6 @@ before_install:
   - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini{,.disabled} || echo "xdebug not available"
   - composer validate
   - travis_retry composer self-update
-  - travis_retry composer config --unset platform.php
 
 install:
   - rm composer.lock
@@ -54,4 +53,4 @@ jobs:
     - stage: Code Quality
       env: STATIC_ANALYSIS
       install: travis_retry composer install --prefer-dist
-      script: vendor/bin/phpstan a
+      script: ./vendor/bin/phpstan a
