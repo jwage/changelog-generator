@@ -119,6 +119,13 @@ EOT
                 'Whether to also include open issues.',
                 ''
             )
+            ->addOption(
+                'include-date',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Whether to also include date to the milestone.',
+                ''
+            )
         ;
     }
 
@@ -168,13 +175,19 @@ EOT
         $labels      = $input->getOption('label');
         $includeOpen = $this->getIncludeOpen($input);
 
-        return new ChangelogConfig(
+        $changelogConfig = new ChangelogConfig(
             $user,
             $repository,
             $milestone,
             $labels,
             $includeOpen
         );
+
+        if ($input->hasOption('include-date')) {
+            $changelogConfig->setIncludeDate($this->getIncludeDate($input));
+        }
+
+        return $changelogConfig;
     }
 
     /**
@@ -301,11 +314,10 @@ EOT
 
     private function overrideChangelogConfig(InputInterface $input, ChangelogConfig $changelogConfig) : void
     {
-        $user        = $input->getOption('user');
-        $repository  = $input->getOption('repository');
-        $milestone   = $input->getOption('milestone');
-        $labels      = $input->getOption('label');
-        $includeOpen = $input->getOption('include-open');
+        $user       = $input->getOption('user');
+        $repository = $input->getOption('repository');
+        $milestone  = $input->getOption('milestone');
+        $labels     = $input->getOption('label');
 
         if ($user !== null) {
             $changelogConfig->setUser($user);
@@ -323,11 +335,15 @@ EOT
             $changelogConfig->setLabels($labels);
         }
 
-        if ($includeOpen === '') {
+        if ($input->hasOption('include-open')) {
+            $changelogConfig->setIncludeOpen($this->getIncludeOpen($input));
+        }
+
+        if (! $input->hasOption('include-date')) {
             return;
         }
 
-        $changelogConfig->setIncludeOpen($this->getIncludeOpen($input));
+        $changelogConfig->setIncludeDate($this->getIncludeDate($input));
     }
 
     private function getIncludeOpen(InputInterface $input) : bool
@@ -345,6 +361,28 @@ EOT
         }
 
         // --include-open option provided and value was provided
+        if (is_string($includeOpen) && in_array($includeOpen, ['1', 'true'], true)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function getIncludeDate(InputInterface $input) : bool
+    {
+        $includeOpen = $input->getOption('include-date');
+
+        // --include-date option not provided, default to false
+        if ($includeOpen === '') {
+            return false;
+        }
+
+        // --include-date option provided, but no value was given, default to true
+        if ($includeOpen === null) {
+            return true;
+        }
+
+        // --include-date option provided and value was provided
         if (is_string($includeOpen) && in_array($includeOpen, ['1', 'true'], true)) {
             return true;
         }

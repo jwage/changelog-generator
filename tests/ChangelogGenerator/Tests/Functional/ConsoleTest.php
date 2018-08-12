@@ -53,7 +53,6 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-
     public function testGenerateInvalidConfig() : void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -471,6 +470,50 @@ final class ConsoleTest extends TestCase
         $output = $this->createMock(OutputInterface::class);
 
         $changelogConfig = new ChangelogConfig('doctrine', 'migrations', '2.0', ['Enhancement', 'Bug']);
+
+        $this->changelogGenerator->expects(self::once())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
+
+    public function testGenerateWithDate() : void
+    {
+        $input = new ArrayInput([
+            'command'       => 'generate',
+            '--user'        => 'jwage',
+            '--repository'  => 'changelog-generator',
+            '--milestone'   => '1.0',
+            '--include-date' => null,
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
+        $changelogConfig->setIncludeDate(true);
+
+        $this->changelogGenerator->expects(self::once())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
+
+    public function testGenerateConfigOverrideDate() : void
+    {
+        $input = new ArrayInput([
+            'command'       => 'generate',
+            '--user'        => 'jwage',
+            '--repository'  => 'changelog-generator',
+            '--milestone'   => '1.0',
+            '--include-date' => 0,
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
+        $changelogConfig->setIncludeDate(false);
 
         $this->changelogGenerator->expects(self::once())
             ->method('generate')

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ChangelogGenerator;
 
+use DateTime;
 use Symfony\Component\Console\Output\OutputInterface;
 use function array_filter;
 use function array_map;
@@ -32,8 +33,15 @@ class ChangelogGenerator
         $issues      = $this->issueRepository->getMilestoneIssues($changelogConfig);
         $issueGroups = $this->issueGrouper->groupIssues($issues, $changelogConfig);
 
+        $date = '';
+
+        if ($changelogConfig->shouldIncludeDate()) {
+            $dateTime = new DateTime('now');
+            $date     = ' - [' . $dateTime->format($changelogConfig->getOption('dateFormat')) . ']';
+        }
+
         $output->writeln([
-            sprintf('## %s', $changelogConfig->getMilestone()),
+            sprintf('## %s%s', $changelogConfig->getMilestone(), $date),
             '',
             sprintf('- Total issues resolved: **%s**', $this->getNumberOfIssues($issues)),
             sprintf('- Total pull requests resolved: **%s**', $this->getNumberOfPullRequests($issues)),
