@@ -77,7 +77,7 @@ final class IssueTest extends TestCase
 
         $this->issue->setLinkedPullRequest($linkedPullRequest);
 
-        self::assertSame($linkedPullRequest, $this->issue->getLinkedPullRequest());
+        self::assertInstanceOf(Issue::class, $this->issue->getLinkedPullRequest());
     }
 
     public function testLinkedIssue() : void
@@ -88,7 +88,7 @@ final class IssueTest extends TestCase
 
         $this->issue->setLinkedIssue($linkedIssue);
 
-        self::assertSame($linkedIssue, $this->issue->getLinkedIssue());
+        self::assertInstanceOf(Issue::class, $this->issue->getLinkedIssue());
     }
 
     public function testRender() : void
