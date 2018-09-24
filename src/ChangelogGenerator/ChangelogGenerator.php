@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace ChangelogGenerator;
 
 use Symfony\Component\Console\Output\OutputInterface;
+use const PHP_EOL;
 use function array_filter;
 use function array_map;
 use function array_unique;
 use function count;
+use function mb_strlen;
 use function sprintf;
+use function str_repeat;
 
 class ChangelogGenerator
 {
@@ -33,7 +36,12 @@ class ChangelogGenerator
         $issueGroups = $this->issueGrouper->groupIssues($issues, $changelogConfig);
 
         $output->writeln([
-            sprintf('## %s', $changelogConfig->getMilestone()),
+            sprintf(
+                '%s%s%s',
+                $changelogConfig->getMilestone(),
+                PHP_EOL,
+                str_repeat('=', mb_strlen($changelogConfig->getMilestone()))
+            ),
             '',
             sprintf('- Total issues resolved: **%s**', $this->getNumberOfIssues($issues)),
             sprintf('- Total pull requests resolved: **%s**', $this->getNumberOfPullRequests($issues)),
@@ -43,7 +51,12 @@ class ChangelogGenerator
         foreach ($issueGroups as $issueGroup) {
             $output->writeln([
                 '',
-                sprintf('### %s', $issueGroup->getName()),
+                sprintf(
+                    '%s%s%s',
+                    $issueGroup->getName(),
+                    PHP_EOL,
+                    str_repeat('-', mb_strlen($issueGroup->getName()))
+                ),
                 '',
             ]);
 

@@ -12,6 +12,8 @@ use ChangelogGenerator\IssueGrouper;
 use ChangelogGenerator\IssueRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\OutputInterface;
+use const PHP_EOL;
+use function sprintf;
 
 final class ChangelogGeneratorTest extends TestCase
 {
@@ -54,7 +56,7 @@ final class ChangelogGeneratorTest extends TestCase
             ->with($milestoneIssues)
             ->willReturn($issueGroups);
 
-        $issueGroup->expects(self::once())
+        $issueGroup->expects(self::exactly(2))
             ->method('getName')
             ->willReturn('Enhancement');
 
@@ -97,7 +99,7 @@ final class ChangelogGeneratorTest extends TestCase
         $output->expects(self::at(0))
             ->method('writeln')
             ->with([
-                '## 1.0',
+                sprintf('1.0%s===', PHP_EOL),
                 '',
                 '- Total issues resolved: **2**',
                 '- Total pull requests resolved: **2**',
@@ -108,7 +110,7 @@ final class ChangelogGeneratorTest extends TestCase
             ->method('writeln')
             ->with([
                 '',
-                '### Enhancement',
+                sprintf('Enhancement%s-----------', PHP_EOL),
                 '',
             ]);
 
