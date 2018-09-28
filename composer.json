@@ -10,6 +10,7 @@
     ],
     "require": {
         "php": "^7.1",
+        "ext-mbstring": "*",
         "guzzlehttp/guzzle": "^6.3",
         "ocramius/package-versions": "^1.3",
         "symfony/console": "^4.0"
