@@ -10,13 +10,14 @@ use ChangelogGenerator\IssueFactory;
 use ChangelogGenerator\IssueFetcher;
 use ChangelogGenerator\IssueRepository;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 
 final class IssueRepositoryTest extends TestCase
 {
-    /** @var \PHPUnit_Framework_MockObject_MockObject|IssueFetcher */
+    /** @var PHPUnit_Framework_MockObject_MockObject|IssueFetcher */
     private $issueFetcher;
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject|IssueFactory */
+    /** @var PHPUnit_Framework_MockObject_MockObject|IssueFactory */
     private $issueFactory;
 
     /** @var IssueRepository */

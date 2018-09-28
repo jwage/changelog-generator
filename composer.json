@@ -16,7 +16,7 @@
         "symfony/console": "^4.0"
     },
     "require-dev": {
-        "doctrine/coding-standard": "^4.0",
+        "doctrine/coding-standard": "^5.0",
         "phpstan/phpstan": "^0.10.2",
         "phpstan/phpstan-deprecation-rules": "^0.10.2",
         "phpstan/phpstan-phpunit": "^0.10.2",

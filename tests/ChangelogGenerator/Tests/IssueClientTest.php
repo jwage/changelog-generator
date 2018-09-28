@@ -8,10 +8,11 @@ use ChangelogGenerator\IssueClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 
 final class IssueClientTest extends TestCase
 {
-    /** @var \PHPUnit_Framework_MockObject_MockObject|Client */
+    /** @var PHPUnit_Framework_MockObject_MockObject|Client */
     private $client;
 
     /** @var IssueClient */

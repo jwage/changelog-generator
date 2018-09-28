@@ -10,6 +10,7 @@ use ChangelogGenerator\Command\GenerateChangelogCommand;
 use InvalidArgumentException;
 use PackageVersions\Versions;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -24,10 +25,10 @@ use function unlink;
 
 final class ConsoleTest extends TestCase
 {
-    /** @var \PHPUnit_Framework_MockObject_MockObject|ChangelogGenerator */
+    /** @var PHPUnit_Framework_MockObject_MockObject|ChangelogGenerator */
     private $changelogGenerator;
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject|GenerateChangelogCommand */
+    /** @var PHPUnit_Framework_MockObject_MockObject|GenerateChangelogCommand */
     private $generateChangelogCommand;
 
     /** @var Application */
@@ -510,7 +511,7 @@ final class ConsoleTest extends TestCase
 
         $file = sprintf('%s/test.md', sys_get_temp_dir());
 
-        /** @var \PHPUnit_Framework_MockObject_MockObject|GenerateChangelogCommandStub $generateChangelogCommand */
+        /** @var PHPUnit_Framework_MockObject_MockObject|GenerateChangelogCommandStub $generateChangelogCommand */
         $generateChangelogCommand = $this->getMockBuilder(GenerateChangelogCommandStub::class)
             ->setConstructorArgs([$this->changelogGenerator])
             ->setMethods(['fopen'])

@@ -7,13 +7,14 @@ namespace ChangelogGenerator\Tests;
 use ChangelogGenerator\Issue;
 use ChangelogGenerator\IssueGroup;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 
 final class IssueGroupTest extends TestCase
 {
     /** @var string */
     private $name;
 
-    /** @var Issue[]|\PHPUnit_Framework_MockObject_MockObject[] */
+    /** @var Issue[]|PHPUnit_Framework_MockObject_MockObject[] */
     private $issues = [];
 
     /** @var IssueGroup */

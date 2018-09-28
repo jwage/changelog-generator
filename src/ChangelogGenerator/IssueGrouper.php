@@ -66,7 +66,7 @@ class IssueGrouper
      */
     private function getIssuesToGroup(array $issues) : array
     {
-        return array_filter($issues, function (Issue $issue) : bool {
+        return array_filter($issues, static function (Issue $issue) : bool {
             return (! $issue->isPullRequest() && $issue->getLinkedPullRequest() !== null) === false;
         });
     }
