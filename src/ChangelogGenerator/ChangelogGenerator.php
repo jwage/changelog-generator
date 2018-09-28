@@ -73,7 +73,7 @@ class ChangelogGenerator
      */
     private function getNumberOfIssues(array $issues) : int
     {
-        return count(array_filter($issues, function (Issue $issue) : bool {
+        return count(array_filter($issues, static function (Issue $issue) : bool {
             return ! $issue->isPullRequest();
         }));
     }
@@ -83,7 +83,7 @@ class ChangelogGenerator
      */
     private function getNumberOfPullRequests(array $issues) : int
     {
-        return count(array_filter($issues, function (Issue $issue) : bool {
+        return count(array_filter($issues, static function (Issue $issue) : bool {
             return $issue->isPullRequest();
         }));
     }
@@ -93,7 +93,7 @@ class ChangelogGenerator
      */
     private function getNumberOfContributors(array $issues) : int
     {
-        return count(array_unique(array_map(function (Issue $issue) : string {
+        return count(array_unique(array_map(static function (Issue $issue) : string {
             return $issue->getUser();
         }, $issues)));
     }

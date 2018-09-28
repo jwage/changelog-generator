@@ -9,10 +9,11 @@ use ChangelogGenerator\IssueClient;
 use ChangelogGenerator\IssueClientResponse;
 use ChangelogGenerator\IssueFetcher;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 
 final class IssueFetcherTest extends TestCase
 {
-    /** @var \PHPUnit_Framework_MockObject_MockObject|IssueClient */
+    /** @var PHPUnit_Framework_MockObject_MockObject|IssueClient */
     private $issueClient;
 
     /** @var IssueFetcher */

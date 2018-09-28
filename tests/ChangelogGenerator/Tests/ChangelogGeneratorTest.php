@@ -11,16 +11,17 @@ use ChangelogGenerator\IssueGroup;
 use ChangelogGenerator\IssueGrouper;
 use ChangelogGenerator\IssueRepository;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\Console\Output\OutputInterface;
 use const PHP_EOL;
 use function sprintf;
 
 final class ChangelogGeneratorTest extends TestCase
 {
-    /** @var \PHPUnit_Framework_MockObject_MockObject|IssueRepository */
+    /** @var PHPUnit_Framework_MockObject_MockObject|IssueRepository */
     private $issueRepository;
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject|IssueGrouper */
+    /** @var PHPUnit_Framework_MockObject_MockObject|IssueGrouper */
     private $issueGrouper;
 
     /** @var ChangelogGenerator */

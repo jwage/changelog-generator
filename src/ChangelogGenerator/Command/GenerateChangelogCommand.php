@@ -118,8 +118,7 @@ EOT
                 InputOption::VALUE_OPTIONAL,
                 'Whether to also include open issues.',
                 ''
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
@@ -244,7 +243,7 @@ EOT
 
     private function getChangelogFilePath(?string $file) : string
     {
-        return $file === null ? sprintf('%s/CHANGELOG.md', getcwd()) : $file;
+        return $file ?? sprintf('%s/CHANGELOG.md', getcwd());
     }
 
     /**
