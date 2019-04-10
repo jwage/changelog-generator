@@ -3,7 +3,7 @@
 ./download-box.sh
 
 # lock PHP to minimum allowed version
-composer config platform.php 7.1.3
+composer config platform.php 7.2.15
 composer update
 
 php box.phar compile -vv
