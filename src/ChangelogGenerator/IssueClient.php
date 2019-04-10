@@ -4,33 +4,46 @@ declare(strict_types=1);
 
 namespace ChangelogGenerator;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
 use function json_decode;
 use function preg_match;
 
 class IssueClient
 {
-    /** @var Client */
+    /** @var RequestFactoryInterface */
+    private $messageFactory;
+
+    /** @var ClientInterface */
     private $client;
 
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
+    public function __construct(
+        RequestFactoryInterface $messageFactory,
+        ClientInterface $client
+    ) {
+        $this->messageFactory = $messageFactory;
+        $this->client         = $client;
     }
 
     public function execute(string $url) : IssueClientResponse
     {
-        $response = $this->client->request('GET', $url);
+        $request = $this->messageFactory
+            ->createRequest('GET', $url)
+            ->withAddedHeader('User-Agent', 'jwage/changelog-generator');
 
-        $body = (string) $response->getBody();
+        $response = $this->client->sendRequest($request);
 
-        $body = json_decode($body, true);
+        $responseBody = $response
+            ->getBody()
+            ->__toString();
+
+        $body = json_decode($responseBody, true);
 
         return new IssueClientResponse($body, $this->getNextUrl($response));
     }
 
-    private function getNextUrl(Response $response) : ?string
+    private function getNextUrl(ResponseInterface $response) : ?string
     {
         $links = $response->getHeader('Link');
 

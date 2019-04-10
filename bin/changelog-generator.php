@@ -10,6 +10,8 @@ use ChangelogGenerator\IssueFetcher;
 use ChangelogGenerator\IssueGrouper;
 use ChangelogGenerator\IssueRepository;
 use GuzzleHttp\Client;
+use Http\Discovery\HttpClientDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
 use PackageVersions\Versions;
 use Symfony\Component\Console\Application;
 
@@ -35,8 +37,10 @@ if (!$autoloader) {
     die('vendor/autoload.php could not be found. Did you run `php composer.phar install`?');
 }
 
-$client = new Client();
-$issueClient = new IssueClient($client);
+$issueClient = new IssueClient(
+    Psr17FactoryDiscovery::findRequestFactory(),
+    HttpClientDiscovery::find()
+);
 $issueFactory = new IssueFactory();
 $issueFetcher = new IssueFetcher($issueClient);
 $issueRepository = new IssueRepository($issueFetcher, $issueFactory);

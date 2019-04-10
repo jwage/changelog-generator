@@ -5,14 +5,20 @@ declare(strict_types=1);
 namespace ChangelogGenerator\Tests;
 
 use ChangelogGenerator\IssueClient;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 final class IssueClientTest extends TestCase
 {
-    /** @var PHPUnit_Framework_MockObject_MockObject|Client */
+    /** @var RequestFactoryInterface|MockObject */
+    private $messageFactory;
+
+    /** @var ClientInterface|MockObject */
     private $client;
 
     /** @var IssueClient */
@@ -20,15 +26,32 @@ final class IssueClientTest extends TestCase
 
     public function testExecute() : void
     {
-        $response = $this->createMock(Response::class);
+        $request  = $this->createMock(RequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+
+        $this->messageFactory->expects(self::once())
+            ->method('createRequest')
+            ->with('GET', 'https://www.google.com')
+            ->willReturn($request);
+
+        $request->expects(self::once())
+            ->method('withAddedHeader')
+            ->with('User-Agent', 'jwage/changelog-generator')
+            ->willReturn($request);
 
         $this->client->expects(self::once())
-            ->method('request')
-            ->with('GET', 'https://www.google.com')
+            ->method('sendRequest')
+            ->with($request)
             ->willReturn($response);
+
+        $stream = $this->createMock(StreamInterface::class);
 
         $response->expects(self::once())
             ->method('getBody')
+            ->willReturn($stream);
+
+        $stream->expects(self::once())
+            ->method('__toString')
             ->willReturn('{"test": true}');
 
         $response->expects(self::once())
@@ -44,15 +67,32 @@ final class IssueClientTest extends TestCase
 
     public function testExecuteNullNextUrl() : void
     {
-        $response = $this->createMock(Response::class);
+        $request  = $this->createMock(RequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+
+        $this->messageFactory->expects(self::once())
+            ->method('createRequest')
+            ->with('GET', 'https://www.google.com')
+            ->willReturn($request);
+
+        $request->expects(self::once())
+            ->method('withAddedHeader')
+            ->with('User-Agent', 'jwage/changelog-generator')
+            ->willReturn($request);
 
         $this->client->expects(self::once())
-            ->method('request')
-            ->with('GET', 'https://www.google.com')
+            ->method('sendRequest')
+            ->with($request)
             ->willReturn($response);
+
+        $stream = $this->createMock(StreamInterface::class);
 
         $response->expects(self::once())
             ->method('getBody')
+            ->willReturn($stream);
+
+        $stream->expects(self::once())
+            ->method('__toString')
             ->willReturn('{"test": true}');
 
         $response->expects(self::once())
@@ -68,8 +108,9 @@ final class IssueClientTest extends TestCase
 
     protected function setUp() : void
     {
-        $this->client = $this->createMock(Client::class);
+        $this->messageFactory = $this->createMock(RequestFactoryInterface::class);
+        $this->client         = $this->createMock(ClientInterface::class);
 
-        $this->issueClient = new IssueClient($this->client);
+        $this->issueClient = new IssueClient($this->messageFactory, $this->client);
     }
 }
