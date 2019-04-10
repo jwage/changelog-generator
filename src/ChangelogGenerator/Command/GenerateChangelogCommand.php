@@ -7,12 +7,14 @@ namespace ChangelogGenerator\Command;
 use ChangelogGenerator\ChangelogConfig;
 use ChangelogGenerator\ChangelogGenerator;
 use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
+use function assert;
 use function count;
 use function current;
 use function file_exists;
@@ -20,6 +22,7 @@ use function file_get_contents;
 use function file_put_contents;
 use function fopen;
 use function getcwd;
+use function gettype;
 use function in_array;
 use function is_array;
 use function is_string;
@@ -121,7 +124,7 @@ EOT
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) : void
+    protected function execute(InputInterface $input, OutputInterface $output) : ?int
     {
         $changelogConfig = $this->getChangelogConfig($input);
 
@@ -137,20 +140,28 @@ EOT
         );
 
         if ($this->getFileWriteStrategy($input) !== self::WRITE_STRATEGY_PREPEND) {
-            return;
+            return 0;
         }
 
-        $file = $this->getChangelogFilePath($input->getOption('file'));
+        $file = $input->getOption('file');
+
+        if ($file === null) {
+            $file = $this->getChangelogFilePath();
+        }
 
         if (! ($changelogOutput instanceof BufferedOutput)) {
-            return;
+            return 0;
         }
+
+        assert(is_string($file));
 
         if (! file_exists($file)) {
             touch($file);
         }
 
         file_put_contents($file, $changelogOutput->fetch() . file_get_contents($file));
+
+        return 0;
     }
 
     private function getChangelogConfig(InputInterface $input) : ChangelogConfig
@@ -161,10 +172,13 @@ EOT
             return $changelogConfig;
         }
 
-        $user        = (string) $input->getOption('user');
-        $repository  = (string) $input->getOption('repository');
-        $milestone   = (string) $input->getOption('milestone');
-        $labels      = $input->getOption('label');
+        $user       = $this->getStringOption($input, 'user');
+        $repository = $this->getStringOption($input, 'repository');
+        $milestone  = $this->getStringOption($input, 'milestone');
+
+        /** @var string[] $labels */
+        $labels = $input->getOption('label');
+
         $includeOpen = $this->getIncludeOpen($input);
 
         return new ChangelogConfig(
@@ -174,6 +188,24 @@ EOT
             $labels,
             $includeOpen
         );
+    }
+
+    /**
+     * @throws RuntimeException
+     */
+    private function getStringOption(InputInterface $input, string $name) : string
+    {
+        $value = $input->getOption($name);
+
+        if ($value === null) {
+            return '';
+        }
+
+        if (is_string($value)) {
+            return $value;
+        }
+
+        throw new RuntimeException(sprintf('Invalid option value type: %s', gettype($value)));
     }
 
     /**
@@ -219,7 +251,11 @@ EOT
         $changelogOutput = $output;
 
         if ($file !== false) {
-            $changelogOutput = $this->createOutput($this->getChangelogFilePath($file), $fileWriteStrategy);
+            if (is_string($file)) {
+                $changelogOutput = $this->createOutput($file, $fileWriteStrategy);
+            } elseif ($file === null) {
+                $changelogOutput = $this->createOutput($this->getChangelogFilePath(), $fileWriteStrategy);
+            }
         }
 
         return $changelogOutput;
@@ -241,9 +277,9 @@ EOT
         return self::WRITE_STRATEGY_REPLACE;
     }
 
-    private function getChangelogFilePath(?string $file) : string
+    private function getChangelogFilePath() : string
     {
-        return $file ?? sprintf('%s/CHANGELOG.md', getcwd());
+        return sprintf('%s/CHANGELOG.md', getcwd());
     }
 
     /**
@@ -261,15 +297,20 @@ EOT
             }
         }
 
+        assert(is_string($config));
+
         if (! file_exists($config)) {
             throw new InvalidArgumentException(sprintf('Configuration file "%s" does not exist.', $config));
         }
 
-        $changelogConfigs = include $config;
+        $configReturn = include $config;
 
-        if (! is_array($changelogConfigs) || count($changelogConfigs) === 0) {
+        if (! is_array($configReturn) || count($configReturn) === 0) {
             throw new InvalidArgumentException(sprintf('Configuration file "%s" did not return anything.', $config));
         }
+
+        /** @var ChangelogConfig[] $changelogConfigs */
+        $changelogConfigs = $configReturn;
 
         $changelogConfig = $this->findChangelogConfig($input, $changelogConfigs);
 
@@ -288,6 +329,8 @@ EOT
         $changelogConfig = current($changelogConfigs);
 
         if ($project !== null) {
+            assert(is_string($project));
+
             if (! isset($changelogConfigs[$project])) {
                 throw new InvalidArgumentException(sprintf('Could not find project named "%s" configured', $project));
             }
@@ -307,18 +350,22 @@ EOT
         $includeOpen = $input->getOption('include-open');
 
         if ($user !== null) {
+            assert(is_string($user));
             $changelogConfig->setUser($user);
         }
 
         if ($repository !== null) {
+            assert(is_string($repository));
             $changelogConfig->setRepository($repository);
         }
 
         if ($milestone !== null) {
+            assert(is_string($milestone));
             $changelogConfig->setMilestone($milestone);
         }
 
         if ($labels !== []) {
+            assert(is_array($labels));
             $changelogConfig->setLabels($labels);
         }
 
