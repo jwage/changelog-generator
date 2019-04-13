@@ -2,4 +2,4 @@
 /vendor
 /build
 /.phpcs-cache
-/config.php
+/changelog-generator-config.php
