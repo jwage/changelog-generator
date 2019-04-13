@@ -121,6 +121,13 @@ EOT
                 InputOption::VALUE_OPTIONAL,
                 'Whether to also include open issues.',
                 ''
+            )
+            ->addOption(
+                'show-contributors',
+                '',
+                InputOption::VALUE_OPTIONAL,
+                'Whether to include a section with a list of contributors.',
+                ''
             );
     }
 
@@ -172,22 +179,11 @@ EOT
             return $changelogConfig;
         }
 
-        $user       = $this->getStringOption($input, 'user');
-        $repository = $this->getStringOption($input, 'repository');
-        $milestone  = $this->getStringOption($input, 'milestone');
+        $changelogConfig = (new ChangelogConfig());
 
-        /** @var string[] $labels */
-        $labels = $input->getOption('label');
+        $this->loadChangelogConfigFromInput($input, $changelogConfig);
 
-        $includeOpen = $this->getIncludeOpen($input);
-
-        return new ChangelogConfig(
-            $user,
-            $repository,
-            $milestone,
-            $labels,
-            $includeOpen
-        );
+        return $changelogConfig;
     }
 
     /**
@@ -206,6 +202,39 @@ EOT
         }
 
         throw new RuntimeException(sprintf('Invalid option value type: %s', gettype($value)));
+    }
+
+    private function getBooleanOption(InputInterface $input, string $name) : bool
+    {
+        $value = $input->getOption($name);
+
+        // option not provided, default to false
+        if ($value === '') {
+            return false;
+        }
+
+        // option provided, but no value was given, default to true
+        if ($value === null) {
+            return true;
+        }
+
+        // option provided and value was provided
+        if (is_string($value) && in_array($value, ['1', 'true'], true)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getArrayOption(InputInterface $input, string $name) : array
+    {
+        /** @var string[] $value */
+        $value = $input->getOption($name);
+
+        return $value;
     }
 
     /**
@@ -314,7 +343,7 @@ EOT
 
         $changelogConfig = $this->findChangelogConfig($input, $changelogConfigs);
 
-        $this->overrideChangelogConfig($input, $changelogConfig);
+        $this->loadChangelogConfigFromInput($input, $changelogConfig);
 
         return $changelogConfig;
     }
@@ -341,60 +370,32 @@ EOT
         return $changelogConfig;
     }
 
-    private function overrideChangelogConfig(InputInterface $input, ChangelogConfig $changelogConfig) : void
+    private function loadChangelogConfigFromInput(InputInterface $input, ChangelogConfig $changelogConfig) : void
     {
-        $user        = $input->getOption('user');
-        $repository  = $input->getOption('repository');
-        $milestone   = $input->getOption('milestone');
-        $labels      = $input->getOption('label');
-        $includeOpen = $input->getOption('include-open');
-
-        if ($user !== null) {
-            assert(is_string($user));
-            $changelogConfig->setUser($user);
+        if ($input->getOption('user') !== null) {
+            $changelogConfig->setUser($this->getStringOption($input, 'user'));
         }
 
-        if ($repository !== null) {
-            assert(is_string($repository));
-            $changelogConfig->setRepository($repository);
+        if ($input->getOption('repository') !== null) {
+            $changelogConfig->setRepository($this->getStringOption($input, 'repository'));
         }
 
-        if ($milestone !== null) {
-            assert(is_string($milestone));
-            $changelogConfig->setMilestone($milestone);
+        if ($input->getOption('milestone') !== null) {
+            $changelogConfig->setMilestone($this->getStringOption($input, 'milestone'));
         }
 
-        if ($labels !== []) {
-            assert(is_array($labels));
-            $changelogConfig->setLabels($labels);
+        if ($input->getOption('label') !== []) {
+            $changelogConfig->setLabels($this->getArrayOption($input, 'label'));
         }
 
-        if ($includeOpen === '') {
+        if ($input->getOption('include-open') !== '') {
+            $changelogConfig->setIncludeOpen($this->getBooleanOption($input, 'include-open'));
+        }
+
+        if ($input->getOption('show-contributors') === '') {
             return;
         }
 
-        $changelogConfig->setIncludeOpen($this->getIncludeOpen($input));
-    }
-
-    private function getIncludeOpen(InputInterface $input) : bool
-    {
-        $includeOpen = $input->getOption('include-open');
-
-        // --include-open option not provided, default to false
-        if ($includeOpen === '') {
-            return false;
-        }
-
-        // --include-open option provided, but no value was given, default to true
-        if ($includeOpen === null) {
-            return true;
-        }
-
-        // --include-open option provided and value was provided
-        if (is_string($includeOpen) && in_array($includeOpen, ['1', 'true'], true)) {
-            return true;
-        }
-
-        return false;
+        $changelogConfig->setShowContributors($this->getBooleanOption($input, 'show-contributors'));
     }
 }

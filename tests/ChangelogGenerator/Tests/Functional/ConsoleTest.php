@@ -54,6 +54,27 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
+    public function testGenerateShowContributors() : void
+    {
+        $input = new ArrayInput([
+            'command'             => 'generate',
+            '--user'              => 'jwage',
+            '--repository'        => 'changelog-generator',
+            '--milestone'         => '1.0',
+            '--show-contributors' => null,
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = (new ChangelogConfig('jwage', 'changelog-generator', '1.0', []))
+            ->setShowContributors(true);
+
+        $this->changelogGenerator->expects(self::once())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
 
     public function testGenerateInvalidConfig() : void
     {

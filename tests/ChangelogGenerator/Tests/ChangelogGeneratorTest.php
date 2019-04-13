@@ -35,17 +35,25 @@ final class ChangelogGeneratorTest extends TestCase
 
         $output = $this->createMock(OutputInterface::class);
 
-        $issue1       = $this->createMock(Issue::class);
-        $issue2       = $this->createMock(Issue::class);
-        $pullRequest1 = $this->createMock(Issue::class);
-        $pullRequest2 = $this->createMock(Issue::class);
+        $pullRequest1 = new Issue(3, 'Issue #3', 'Test Body', 'https://example.com/3', 'Ocramius', [], true);
+        $pullRequest2 = new Issue(4, 'Issue #4', 'Test Body', 'https://example.com/4', 'romanb', [], true);
 
-        $issueGroup = $this->createMock(IssueGroup::class);
+        $issue1 = new Issue(1, 'Issue #1', 'Test Body', 'https://example.com/1', 'jwage', [], false);
+        $issue1->setLinkedPullRequest($pullRequest1);
+
+        $issue2 = new Issue(2, 'Issue #2', 'Test Body', 'https://example.com/2', 'jwage', [], false);
+        $issue2->setLinkedPullRequest($pullRequest2);
+
+        $pullRequest1->setLinkedIssue($issue1);
+        $pullRequest2->setLinkedIssue($issue2);
+
+        $issueGroup = new IssueGroup('Enhancement', [$pullRequest1, $pullRequest2]);
 
         $milestoneIssues = [$issue1, $issue2, $pullRequest1, $pullRequest2];
         $issueGroups     = [$issueGroup];
 
-        $changelogConfig = new ChangelogConfig($user, $repository, $milestone, []);
+        $changelogConfig = (new ChangelogConfig($user, $repository, $milestone, []))
+            ->setShowContributors(true);
 
         $this->issueRepository->expects(self::once())
             ->method('getMilestoneIssues')
@@ -56,46 +64,6 @@ final class ChangelogGeneratorTest extends TestCase
             ->method('groupIssues')
             ->with($milestoneIssues)
             ->willReturn($issueGroups);
-
-        $issueGroup->expects(self::exactly(2))
-            ->method('getName')
-            ->willReturn('Enhancement');
-
-        $issueGroup->expects(self::once())
-            ->method('getIssues')
-            ->willReturn([$issue1, $issue2]);
-
-        $issue1->expects(self::once())
-            ->method('render')
-            ->willReturn('Issue #1');
-
-        $issue1->expects(self::once())
-            ->method('getUser')
-            ->willReturn('jwage');
-
-        $issue2->expects(self::once())
-            ->method('render')
-            ->willReturn('Issue #2');
-
-        $issue2->expects(self::once())
-            ->method('getUser')
-            ->willReturn('jwage');
-
-        $pullRequest1->expects(self::any())
-            ->method('isPullRequest')
-            ->willReturn(true);
-
-        $pullRequest1->expects(self::once())
-            ->method('getUser')
-            ->willReturn('Ocramius');
-
-        $pullRequest2->expects(self::any())
-            ->method('isPullRequest')
-            ->willReturn(true);
-
-        $pullRequest2->expects(self::once())
-            ->method('getUser')
-            ->willReturn('romanb');
 
         $output->expects(self::at(0))
             ->method('writeln')
@@ -117,7 +85,31 @@ final class ChangelogGeneratorTest extends TestCase
 
         $output->expects(self::at(2))
             ->method('writeln')
-            ->with('Issue #1');
+            ->with(' - [3: Issue #3](https://example.com/3) thanks to @Ocramius and @jwage');
+
+        $output->expects(self::at(3))
+            ->method('writeln')
+            ->with(' - [4: Issue #4](https://example.com/4) thanks to @romanb and @jwage');
+
+        $output->expects(self::at(4))
+            ->method('writeln')
+            ->with([
+                '',
+                sprintf('Contributors%s------------', PHP_EOL),
+                '',
+            ]);
+
+        $output->expects(self::at(5))
+            ->method('writeln')
+            ->with(' - [@jwage](https://github.com/jwage)');
+
+        $output->expects(self::at(6))
+            ->method('writeln')
+            ->with(' - [@Ocramius](https://github.com/Ocramius)');
+
+        $output->expects(self::at(7))
+            ->method('writeln')
+            ->with(' - [@romanb](https://github.com/romanb)');
 
         $this->changelogGenerator->generate($changelogConfig, $output);
     }
