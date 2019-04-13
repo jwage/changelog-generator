@@ -9,6 +9,7 @@ use const PHP_EOL;
 use function array_filter;
 use function array_map;
 use function array_unique;
+use function array_values;
 use function count;
 use function mb_strlen;
 use function sprintf;
@@ -36,12 +37,7 @@ class ChangelogGenerator
         $issueGroups = $this->issueGrouper->groupIssues($issues, $changelogConfig);
 
         $output->writeln([
-            sprintf(
-                '%s%s%s',
-                $changelogConfig->getMilestone(),
-                PHP_EOL,
-                str_repeat('=', mb_strlen($changelogConfig->getMilestone()))
-            ),
+            $this->buildMarkdownHeaderText($changelogConfig->getMilestone(), '='),
             '',
             sprintf('- Total issues resolved: **%s**', $this->getNumberOfIssues($issues)),
             sprintf('- Total pull requests resolved: **%s**', $this->getNumberOfPullRequests($issues)),
@@ -51,12 +47,7 @@ class ChangelogGenerator
         foreach ($issueGroups as $issueGroup) {
             $output->writeln([
                 '',
-                sprintf(
-                    '%s%s%s',
-                    $issueGroup->getName(),
-                    PHP_EOL,
-                    str_repeat('-', mb_strlen($issueGroup->getName()))
-                ),
+                $this->buildMarkdownHeaderText($issueGroup->getName(), '-'),
                 '',
             ]);
 
@@ -65,7 +56,57 @@ class ChangelogGenerator
             }
         }
 
+        if ($changelogConfig->showContributors()) {
+            $this->outputContributors($output, $issues);
+        }
+
         $output->writeln('');
+    }
+
+    /**
+     * @param Issue[] $issues
+     */
+    private function outputContributors(OutputInterface $output, array $issues) : void
+    {
+        $contributors = $this->buildContributorsList($issues);
+
+        $output->writeln([
+            '',
+            $this->buildMarkdownHeaderText('Contributors', '-'),
+            '',
+        ]);
+
+        foreach ($contributors as $contributor) {
+            $output->writeln(sprintf(' - [@%s](https://github.com/%s)', $contributor, $contributor));
+        }
+    }
+
+    /**
+     * @param Issue[] $issues
+     *
+     * @return string[]
+     */
+    private function buildContributorsList(array $issues) : array
+    {
+        $contributors = [];
+
+        foreach ($issues as $issue) {
+            foreach ($issue->getContributors() as $contributor) {
+                $contributors[$contributor] = $contributor;
+            }
+        }
+
+        return array_values($contributors);
+    }
+
+    private function buildMarkdownHeaderText(string $header, string $headerCharacter) : string
+    {
+        return sprintf(
+            '%s%s%s',
+            $header,
+            PHP_EOL,
+            str_repeat($headerCharacter, mb_strlen($header))
+        );
     }
 
     /**

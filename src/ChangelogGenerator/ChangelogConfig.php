@@ -28,6 +28,9 @@ class ChangelogConfig
     /** @var bool */
     private $includeOpen;
 
+    /** @var bool */
+    private $showContributors = false;
+
     /** @var mixed[] */
     private $options = ['rootGitHubUrl' => self::DEFAULT_ROOT_GITHUB_URL];
 
@@ -113,6 +116,18 @@ class ChangelogConfig
     public function setIncludeOpen(bool $includeOpen) : self
     {
         $this->includeOpen = $includeOpen;
+
+        return $this;
+    }
+
+    public function showContributors() : bool
+    {
+        return $this->showContributors;
+    }
+
+    public function setShowContributors(bool $showContributors) : self
+    {
+        $this->showContributors = $showContributors;
 
         return $this;
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ChangelogGenerator;
 
+use function array_values;
 use function sprintf;
 
 class Issue
@@ -115,6 +116,26 @@ class Issue
     public function setLinkedIssue(Issue $linkedIssue) : void
     {
         $this->linkedIssue = $linkedIssue;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getContributors() : array
+    {
+        $contributors = [];
+
+        $contributors[$this->user] = $this->user;
+
+        if ($this->linkedPullRequest !== null) {
+            $contributors[$this->linkedPullRequest->getUser()] = $this->linkedPullRequest->getUser();
+        }
+
+        if ($this->linkedIssue !== null) {
+            $contributors[$this->linkedIssue->getUser()] = $this->linkedIssue->getUser();
+        }
+
+        return array_values($contributors);
     }
 
     public function render() : string
