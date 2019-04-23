@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace ChangelogGenerator\Tests;
 
 use ChangelogGenerator\ChangelogConfig;
+use ChangelogGenerator\GitHubCredentials;
+use ChangelogGenerator\GitHubUsernamePassword;
 use PHPUnit\Framework\TestCase;
 
 final class ChangelogConfigTest extends TestCase
@@ -138,6 +140,20 @@ final class ChangelogConfigTest extends TestCase
         );
 
         self::assertFalse($changelogConfig->isValid());
+    }
+
+    public function testGetSetGitHubCredentials() : void
+    {
+        self::assertNull($this->changelogConfig->getGitHubCredentials());
+
+        $expectedGitHubCredentials = new GitHubUsernamePassword('username', 'password');
+
+        $this->changelogConfig->setGitHubCredentials($expectedGitHubCredentials);
+
+        /** @var GitHubCredentials $gitHubCredentials */
+        $gitHubCredentials = $this->changelogConfig->getGitHubCredentials();
+
+        self::assertSame($expectedGitHubCredentials, $gitHubCredentials);
     }
 
     protected function setUp() : void

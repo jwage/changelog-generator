@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ChangelogGenerator\Tests;
 
+use ChangelogGenerator\GitHubUsernamePassword;
 use ChangelogGenerator\IssueClient;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -12,6 +13,7 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 
 final class IssueClientTest extends TestCase
 {
@@ -55,6 +57,10 @@ final class IssueClientTest extends TestCase
             ->willReturn('{"test": true}');
 
         $response->expects(self::once())
+            ->method('getStatusCode')
+            ->willReturn(200);
+
+        $response->expects(self::once())
             ->method('getHeader')
             ->with('Link')
             ->willReturn(['<https://www.google.com?next>; rel="next", <https://www.google.com?last>; rel="last"']);
@@ -96,6 +102,10 @@ final class IssueClientTest extends TestCase
             ->willReturn('{"test": true}');
 
         $response->expects(self::once())
+            ->method('getStatusCode')
+            ->willReturn(200);
+
+        $response->expects(self::once())
             ->method('getHeader')
             ->with('Link')
             ->willReturn([]);
@@ -104,6 +114,98 @@ final class IssueClientTest extends TestCase
 
         self::assertEquals(['test' => true], $response->getBody());
         self::assertNull($response->getNextUrl());
+    }
+
+    public function testExecuteThrowsRuntimeExceptionOnNon200() : void
+    {
+        $request  = $this->createMock(RequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+
+        $this->messageFactory->expects(self::once())
+            ->method('createRequest')
+            ->with('GET', 'https://www.google.com')
+            ->willReturn($request);
+
+        $request->expects(self::once())
+            ->method('withAddedHeader')
+            ->with('User-Agent', 'jwage/changelog-generator')
+            ->willReturn($request);
+
+        $this->client->expects(self::once())
+            ->method('sendRequest')
+            ->with($request)
+            ->willReturn($response);
+
+        $stream = $this->createMock(StreamInterface::class);
+
+        $response->expects(self::once())
+            ->method('getBody')
+            ->willReturn($stream);
+
+        $stream->expects(self::once())
+            ->method('__toString')
+            ->willReturn('{"message": "It failed yo!"}');
+
+        $response->expects(self::once())
+            ->method('getStatusCode')
+            ->willReturn(400);
+
+        self::expectException(RuntimeException::class);
+        self::expectExceptionMessage('API call to GitHub failed with status code 400 and message "It failed yo!"');
+
+        $this->issueClient->execute('https://www.google.com');
+    }
+
+    public function testExecuteWithGitHubCredentials() : void
+    {
+        $request  = $this->createMock(RequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+
+        $this->messageFactory->expects(self::once())
+            ->method('createRequest')
+            ->with('GET', 'https://www.google.com')
+            ->willReturn($request);
+
+        $request->expects(self::at(0))
+            ->method('withAddedHeader')
+            ->with('User-Agent', 'jwage/changelog-generator')
+            ->willReturn($request);
+
+        $request->expects(self::at(1))
+            ->method('withAddedHeader')
+            ->with('Authorization', 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=')
+            ->willReturn($request);
+
+        $this->client->expects(self::once())
+            ->method('sendRequest')
+            ->with($request)
+            ->willReturn($response);
+
+        $stream = $this->createMock(StreamInterface::class);
+
+        $response->expects(self::once())
+            ->method('getBody')
+            ->willReturn($stream);
+
+        $stream->expects(self::once())
+            ->method('__toString')
+            ->willReturn('{"test": true}');
+
+        $response->expects(self::once())
+            ->method('getStatusCode')
+            ->willReturn(200);
+
+        $response->expects(self::once())
+            ->method('getHeader')
+            ->with('Link')
+            ->willReturn([]);
+
+        $response = $this->issueClient->execute(
+            'https://www.google.com',
+            new GitHubUsernamePassword('username', 'password')
+        );
+
+        self::assertEquals(['test' => true], $response->getBody());
     }
 
     protected function setUp() : void
