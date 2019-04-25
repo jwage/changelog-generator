@@ -31,6 +31,9 @@ class ChangelogConfig
     /** @var bool */
     private $showContributors = false;
 
+    /** @var GitHubCredentials|null */
+    private $gitHubCredentials;
+
     /** @var mixed[] */
     private $options = ['rootGitHubUrl' => self::DEFAULT_ROOT_GITHUB_URL];
 
@@ -128,6 +131,18 @@ class ChangelogConfig
     public function setShowContributors(bool $showContributors) : self
     {
         $this->showContributors = $showContributors;
+
+        return $this;
+    }
+
+    public function getGitHubCredentials() : ?GitHubCredentials
+    {
+        return $this->gitHubCredentials;
+    }
+
+    public function setGitHubCredentials(GitHubCredentials $gitHubCredentials) : self
+    {
+        $this->gitHubCredentials = $gitHubCredentials;
 
         return $this;
     }

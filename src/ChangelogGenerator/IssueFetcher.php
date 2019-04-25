@@ -30,7 +30,7 @@ class IssueFetcher
             $url = $changelogConfig->getMilestoneIssuesUrl($label);
 
             while (true) {
-                $response = $this->issueClient->execute($url);
+                $response = $this->issueClient->execute($url, $changelogConfig->getGitHubCredentials());
 
                 $body = $response->getBody();
 

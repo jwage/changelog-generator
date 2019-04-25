@@ -161,3 +161,49 @@ return [
     ,
 ];
 ```
+
+## GitHub Authentication
+
+By default it is not required to authenticate with GitHub to use this tool. But if you want
+higher rate limits or want to use it with private repositories then you will need to authenticate.
+
+### Personal Credentials
+
+You can authenticate with your `username` and `password` or a personal access token
+instead of your password using the `ChangelogGenerator\GitHubUsernamePassword` class:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use ChangelogGenerator\ChangelogConfig;
+use ChangelogGenerator\GitHubUsernamePassword;
+
+return [
+    'changelog-generator' => (new ChangelogConfig())
+        // ...
+        ->setGitHubCredentials(new GitHubUsernamePassword('username', 'passwordOrToken'))
+    ,
+];
+```
+
+### OAuth Token
+
+You can authenticate with an OAuth token as well using the `ChangelogGenerator\GitHubOAuthToken` class:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use ChangelogGenerator\ChangelogConfig;
+use ChangelogGenerator\GitHubOAuthToken;
+
+return [
+    'changelog-generator' => (new ChangelogConfig())
+        // ...
+        ->setGitHubCredentials(new GitHubOAuthToken('the oauth token'))
+    ,
+];
+```
