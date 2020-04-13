@@ -82,6 +82,10 @@ class IssueGrouper
             }
 
             foreach ($issues as $i) {
+                if ($issue->getBody() === null) {
+                    continue;
+                }
+
                 if ($i->isPullRequest() || strpos($issue->getBody(), '#' . $i->getNumber()) === false) {
                     continue;
                 }
