@@ -14,32 +14,32 @@ final class IssueTest extends TestCase
 
     public function testNumber() : void
     {
-        self::assertEquals(1, $this->issue->getNumber());
+        self::assertSame(1, $this->issue->getNumber());
     }
 
     public function testGetTitle() : void
     {
-        self::assertEquals('Test Title', $this->issue->getTitle());
+        self::assertSame('Test Title', $this->issue->getTitle());
     }
 
     public function testGetBody() : void
     {
-        self::assertEquals('Test Body', $this->issue->getBody());
+        self::assertSame('Test Body', $this->issue->getBody());
     }
 
     public function testGetUrl() : void
     {
-        self::assertEquals('https://www.google.com', $this->issue->getUrl());
+        self::assertSame('https://www.google.com', $this->issue->getUrl());
     }
 
     public function testGetUser() : void
     {
-        self::assertEquals('jwage', $this->issue->getUser());
+        self::assertSame('jwage', $this->issue->getUser());
     }
 
     public function testGetLabels() : void
     {
-        self::assertEquals(['Enhancement'], $this->issue->getLabels());
+        self::assertSame(['Enhancement'], $this->issue->getLabels());
     }
 
     public function testIsPullRequest() : void
@@ -93,7 +93,7 @@ final class IssueTest extends TestCase
 
     public function testRender() : void
     {
-        self::assertEquals(' - [1: Test Title](https://www.google.com) thanks to @jwage', $this->issue->render());
+        self::assertSame(' - [1: Test Title](https://www.google.com) thanks to @jwage', $this->issue->render());
     }
 
     public function testRenderMultiContributor() : void
@@ -110,7 +110,7 @@ final class IssueTest extends TestCase
 
         $pullRequest->setLinkedIssue($this->issue);
 
-        self::assertEquals(' - [2: Test Title](https://www.google.com) thanks to @Ocramius and @jwage', $pullRequest->render());
+        self::assertSame(' - [2: Test Title](https://www.google.com) thanks to @Ocramius and @jwage', $pullRequest->render());
     }
 
     public function testEmptyBodyIssuesGetsRendered() : void

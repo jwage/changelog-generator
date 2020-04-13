@@ -67,8 +67,8 @@ final class IssueClientTest extends TestCase
 
         $response = $this->issueClient->execute('https://www.google.com');
 
-        self::assertEquals(['test' => true], $response->getBody());
-        self::assertEquals('https://www.google.com?next', $response->getNextUrl());
+        self::assertSame(['test' => true], $response->getBody());
+        self::assertSame('https://www.google.com?next', $response->getNextUrl());
     }
 
     public function testExecuteNullNextUrl() : void
@@ -112,7 +112,7 @@ final class IssueClientTest extends TestCase
 
         $response = $this->issueClient->execute('https://www.google.com');
 
-        self::assertEquals(['test' => true], $response->getBody());
+        self::assertSame(['test' => true], $response->getBody());
         self::assertNull($response->getNextUrl());
     }
 
@@ -205,7 +205,7 @@ final class IssueClientTest extends TestCase
             new GitHubUsernamePassword('username', 'password')
         );
 
-        self::assertEquals(['test' => true], $response->getBody());
+        self::assertSame(['test' => true], $response->getBody());
     }
 
     protected function setUp() : void

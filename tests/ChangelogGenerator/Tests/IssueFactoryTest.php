@@ -23,12 +23,12 @@ final class IssueFactoryTest extends TestCase
             'labels' => [['name' => 'Enhancement']],
         ]);
 
-        self::assertEquals(1, $issue->getNumber());
-        self::assertEquals('&#91;Test&#93; &#95; Title', $issue->getTitle());
-        self::assertEquals('Test Body', $issue->getBody());
-        self::assertEquals('https://google.com', $issue->getUrl());
-        self::assertEquals('jwage', $issue->getUser());
-        self::assertEquals(['Enhancement'], $issue->getLabels());
+        self::assertSame(1, $issue->getNumber());
+        self::assertSame('&#91;Test&#93; &#95; Title', $issue->getTitle());
+        self::assertSame('Test Body', $issue->getBody());
+        self::assertSame('https://google.com', $issue->getUrl());
+        self::assertSame('jwage', $issue->getUser());
+        self::assertSame(['Enhancement'], $issue->getLabels());
     }
 
     protected function setUp() : void

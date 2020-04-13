@@ -20,12 +20,12 @@ final class IssueClientResponseTest extends TestCase
 
     public function testGetBody() : void
     {
-        self::assertEquals($this->body, $this->issueClientResponse->getBody());
+        self::assertSame($this->body, $this->issueClientResponse->getBody());
     }
 
     public function testGetNextUrl() : void
     {
-        self::assertEquals($this->nextUrl, $this->issueClientResponse->getNextUrl());
+        self::assertSame($this->nextUrl, $this->issueClientResponse->getNextUrl());
     }
 
     protected function setUp() : void

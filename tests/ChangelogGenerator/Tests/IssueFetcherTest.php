@@ -38,7 +38,7 @@ final class IssueFetcherTest extends TestCase
 
         $issues = $this->issueFetcher->fetchMilestoneIssues($changelogConfig);
 
-        self::assertEquals([1, 2], $issues);
+        self::assertSame([1, 2], $issues);
     }
 
     protected function setUp() : void
