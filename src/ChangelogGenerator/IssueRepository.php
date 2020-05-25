@@ -28,6 +28,10 @@ class IssueRepository
         $issues = [];
 
         foreach ($issuesData as $issue) {
+            if (isset($issues[$issue['number']])) {
+                continue;
+            }
+
             $issues[$issue['number']] = $this->issueFactory->create($issue);
         }
 

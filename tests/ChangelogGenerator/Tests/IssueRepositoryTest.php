@@ -47,6 +47,14 @@ final class IssueRepositoryTest extends TestCase
                     'user' => ['login' => 'jwage'],
                     'labels' => [['name' => 'Bug']],
                 ],
+                [
+                    'number' => 1,
+                    'title' => 'Issue #1',
+                    'body' => 'Issue #1 Body',
+                    'html_url' => 'https://github.com/jwage/changelog-generator/issue/1',
+                    'user' => ['login' => 'jwage'],
+                    'labels' => [['name' => 'Enhancement']],
+                ],
             ]);
 
         $issue1 = $this->createMock(Issue::class);
