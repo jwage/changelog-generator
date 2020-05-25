@@ -22,12 +22,12 @@ final class IssueGroupTest extends TestCase
 
     public function testGetName() : void
     {
-        self::assertEquals($this->name, $this->issueGroup->getName());
+        self::assertSame($this->name, $this->issueGroup->getName());
     }
 
     public function testGetIssues() : void
     {
-        self::assertEquals($this->issues, $this->issueGroup->getIssues());
+        self::assertSame($this->issues, $this->issueGroup->getIssues());
     }
 
     public function testAddIssue() : void
