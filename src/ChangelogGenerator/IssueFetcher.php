@@ -56,6 +56,8 @@ class IssueFetcher
     }
 
     /**
+     * @deprecated Deprecated in favour of fetchIssues
+     *
      * @return mixed[]
      */
     public function fetchMilestoneIssues(ChangelogConfig $changelogConfig) : array

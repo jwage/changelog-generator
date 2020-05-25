@@ -39,6 +39,8 @@ class IssueRepository
     }
 
     /**
+     * @deprecated Deprecated in favour of getIssues
+     *
      * @return Issue[]
      */
     public function getMilestoneIssues(ChangelogConfig $changelogConfig) : array

@@ -83,6 +83,7 @@ class ChangelogConfig
         return $this;
     }
 
+    /** @deprecated Deprecated in favour of getMilestones */
     public function getMilestone() : string
     {
         return $this->getFirstMilestone();
@@ -94,6 +95,7 @@ class ChangelogConfig
         return $this->milestones;
     }
 
+    /** @deprecated Deprecated in favour of setMilestones and addMilestone */
     public function setMilestone(string $milestone) : self
     {
         $this->setSingleMilestone($milestone);
