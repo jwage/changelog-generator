@@ -26,27 +26,29 @@ class IssueFetcher
 
         $issues = [];
 
-        foreach ($labels as $label) {
-            $url = $changelogConfig->getMilestoneIssuesUrl($label);
+        foreach ($changelogConfig->getMilestones() as $milestone) {
+            foreach ($labels as $label) {
+                $url = $changelogConfig->getIssuesUrl($milestone, $label);
 
-            while (true) {
-                $response = $this->issueClient->execute($url, $changelogConfig->getGitHubCredentials());
+                while (true) {
+                    $response = $this->issueClient->execute($url, $changelogConfig->getGitHubCredentials());
 
-                $body = $response->getBody();
+                    $body = $response->getBody();
 
-                foreach ($body['items'] as $item) {
-                    $issues[] = $item;
+                    foreach ($body['items'] as $item) {
+                        $issues[] = $item;
+                    }
+
+                    $nextUrl = $response->getNextUrl();
+
+                    if ($nextUrl !== null) {
+                        $url = $nextUrl;
+
+                        continue;
+                    }
+
+                    break;
                 }
-
-                $nextUrl = $response->getNextUrl();
-
-                if ($nextUrl !== null) {
-                    $url = $nextUrl;
-
-                    continue;
-                }
-
-                break;
             }
         }
 

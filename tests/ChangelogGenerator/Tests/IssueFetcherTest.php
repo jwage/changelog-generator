@@ -21,8 +21,10 @@ final class IssueFetcherTest extends TestCase
 
     public function testFetchMilestoneIssues() : void
     {
-        $response1 = new IssueClientResponse(['items' => [1]], 'https://www.google.com');
+        $response1 = new IssueClientResponse(['items' => [1]], 'https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed%2Fnext');
         $response2 = new IssueClientResponse(['items' => [2]], null);
+        $response3 = new IssueClientResponse(['items' => [1]], 'https://api.github.com/search/issues?q=milestone%3A%221.1%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed%2Fnext');
+        $response4 = new IssueClientResponse(['items' => [3]], null);
 
         $this->issueClient->expects(self::at(0))
             ->method('execute')
@@ -31,14 +33,25 @@ final class IssueFetcherTest extends TestCase
 
         $this->issueClient->expects(self::at(1))
             ->method('execute')
-            ->with('https://www.google.com')
+            ->with('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed%2Fnext')
             ->willReturn($response2);
 
+        $this->issueClient->expects(self::at(2))
+            ->method('execute')
+            ->with('https://api.github.com/search/issues?q=milestone%3A%221.1%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed')
+            ->willReturn($response3);
+
+        $this->issueClient->expects(self::at(3))
+            ->method('execute')
+            ->with('https://api.github.com/search/issues?q=milestone%3A%221.1%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed%2Fnext')
+            ->willReturn($response4);
+
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
+        $changelogConfig->addMilestone('1.1');
 
         $issues = $this->issueFetcher->fetchMilestoneIssues($changelogConfig);
 
-        self::assertSame([1, 2], $issues);
+        self::assertSame([1, 2, 1, 3], $issues);
     }
 
     protected function setUp() : void
