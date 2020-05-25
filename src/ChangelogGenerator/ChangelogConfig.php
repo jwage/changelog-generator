@@ -205,11 +205,11 @@ class ChangelogConfig
         return $this;
     }
 
-    public function getMilestoneIssuesUrl(string $label) : string
+    public function getIssuesUrl(string $milestone, string $label) : string
     {
         $query = urlencode(sprintf(
             'milestone:"%s" repo:%s/%s%s%s',
-            str_replace('"', '\"', $this->getFirstMilestone()),
+            str_replace('"', '\"', $milestone),
             $this->user,
             $this->repository,
             $this->includeOpen ? '' : ' state:closed',
@@ -217,6 +217,11 @@ class ChangelogConfig
         ));
 
         return sprintf('%s/search/issues?q=%s', $this->getRootGitHubUrl(), $query);
+    }
+
+    public function getMilestoneIssuesUrl(string $label) : string
+    {
+        return $this->getIssuesUrl($this->getFirstMilestone(), $label);
     }
 
     public function isValid() : bool
