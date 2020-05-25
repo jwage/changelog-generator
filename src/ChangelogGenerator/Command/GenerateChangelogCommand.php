@@ -60,6 +60,10 @@ The <info>%command.name%</info> command generates a changelog markdown document 
 You can filter the changelog by label names using the --label option:
 
     <info>%command.full_name% --user=doctrine --repository=migrations --milestone=2.0 --label=Enhancement --label=Bug</info>
+
+You can pass multiple milestones as well:
+
+    <info>%command.full_name% --user=doctrine --repository=migrations --milestone=2.0.5 --milestone=1.10.5 --label=Enhancement --label=Bug</info>
 EOT
             )
             ->addOption(
