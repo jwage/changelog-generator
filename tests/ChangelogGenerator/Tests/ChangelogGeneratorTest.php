@@ -56,7 +56,7 @@ final class ChangelogGeneratorTest extends TestCase
             ->setShowContributors(true);
 
         $this->issueRepository->expects(self::once())
-            ->method('getMilestoneIssues')
+            ->method('getIssues')
             ->with($changelogConfig)
             ->willReturn($milestoneIssues);
 

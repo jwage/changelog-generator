@@ -23,12 +23,12 @@ final class IssueRepositoryTest extends TestCase
     /** @var IssueRepository */
     private $issueRepository;
 
-    public function testGetMilestoneIssues() : void
+    public function testGetIssues() : void
     {
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
 
         $this->issueFetcher->expects(self::once())
-            ->method('fetchMilestoneIssues')
+            ->method('fetchIssues')
             ->with($changelogConfig)
             ->willReturn([
                 [
@@ -84,7 +84,7 @@ final class IssueRepositoryTest extends TestCase
             ])
             ->willReturn($issue2);
 
-        $issues = $this->issueRepository->getMilestoneIssues($changelogConfig);
+        $issues = $this->issueRepository->getIssues($changelogConfig);
 
         self::assertCount(2, $issues);
         self::assertSame($issue1, $issues[1]);

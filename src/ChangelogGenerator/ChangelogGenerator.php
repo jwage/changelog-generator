@@ -33,7 +33,7 @@ class ChangelogGenerator
         ChangelogConfig $changelogConfig,
         OutputInterface $output
     ) : void {
-        $issues      = $this->issueRepository->getMilestoneIssues($changelogConfig);
+        $issues      = $this->issueRepository->getIssues($changelogConfig);
         $issueGroups = $this->issueGrouper->groupIssues($issues, $changelogConfig);
 
         $output->writeln([

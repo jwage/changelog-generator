@@ -19,7 +19,7 @@ final class IssueFetcherTest extends TestCase
     /** @var IssueFetcher */
     private $issueFetcher;
 
-    public function testFetchMilestoneIssues() : void
+    public function testFetchIssues() : void
     {
         $response1 = new IssueClientResponse(['items' => [1]], 'https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed%2Fnext');
         $response2 = new IssueClientResponse(['items' => [2]], null);
@@ -49,7 +49,7 @@ final class IssueFetcherTest extends TestCase
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
         $changelogConfig->addMilestone('1.1');
 
-        $issues = $this->issueFetcher->fetchMilestoneIssues($changelogConfig);
+        $issues = $this->issueFetcher->fetchIssues($changelogConfig);
 
         self::assertSame([1, 2, 1, 3], $issues);
     }

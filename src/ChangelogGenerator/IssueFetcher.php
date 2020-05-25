@@ -19,7 +19,7 @@ class IssueFetcher
     /**
      * @return mixed[]
      */
-    public function fetchMilestoneIssues(ChangelogConfig $changelogConfig) : array
+    public function fetchIssues(ChangelogConfig $changelogConfig) : array
     {
         $labels = $changelogConfig->getLabels();
         $labels = count($labels) === 0 ? [''] : $labels;
@@ -53,5 +53,13 @@ class IssueFetcher
         }
 
         return $issues;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function fetchMilestoneIssues(ChangelogConfig $changelogConfig) : array
+    {
+        return $this->fetchIssues($changelogConfig);
     }
 }
