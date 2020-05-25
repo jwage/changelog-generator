@@ -14,6 +14,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
+use function array_push;
+use function array_shift;
 use function assert;
 use function count;
 use function current;
@@ -75,7 +77,7 @@ EOT
             ->addOption(
                 'milestone',
                 null,
-                InputOption::VALUE_REQUIRED,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
                 'The milestone to build the changelog for.'
             )
             ->addOption(
@@ -380,8 +382,20 @@ EOT
             $changelogConfig->setRepository($this->getStringOption($input, 'repository'));
         }
 
-        if ($input->getOption('milestone') !== null) {
-            $changelogConfig->setMilestone($this->getStringOption($input, 'milestone'));
+        $milestone = $input->getOption('milestone');
+        if ($milestone !== null) {
+            if (! is_array($milestone)) {
+                $singleMilestone = $milestone;
+                $milestone = [];
+
+                if ($milestone !== '') {
+                    array_push($milestone, $singleMilestone);
+                }
+            }
+
+            if ($milestone !== []) {
+                $changelogConfig->setMilestones(...$milestone);
+            }
         }
 
         if ($input->getOption('label') !== []) {

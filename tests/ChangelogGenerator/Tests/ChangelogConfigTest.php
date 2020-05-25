@@ -59,6 +59,25 @@ final class ChangelogConfigTest extends TestCase
         self::assertSame('1.0', $this->changelogConfig->getMilestone());
     }
 
+    public function testSetMilestones() : void
+    {
+        self::assertSame($this->milestone, $this->changelogConfig->getMilestone());
+
+        $this->changelogConfig->setMilestones('1.1', '1.2');
+
+        self::assertSame(['1.1', '1.2'], $this->changelogConfig->getMilestones());
+    }
+
+    public function testAddMilestone() : void
+    {
+        self::assertSame($this->milestone, $this->changelogConfig->getMilestone());
+
+        $this->changelogConfig->addMilestone('1.1', '1.2');
+
+        self::assertSame('1.0', $this->changelogConfig->getMilestone());
+        self::assertSame(['1.0', '1.1', '1.2'], $this->changelogConfig->getMilestones());
+    }
+
     public function testGetSetLabels() : void
     {
         self::assertSame($this->labels, $this->changelogConfig->getLabels());

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ChangelogGenerator;
 
 use function array_merge;
+use function array_push;
 use function sprintf;
 use function str_replace;
 use function urlencode;
@@ -19,8 +20,8 @@ class ChangelogConfig
     /** @var string */
     private $repository;
 
-    /** @var string */
-    private $milestone;
+    /** @var string[] */
+    private $milestones = [];
 
     /** @var string[] */
     private $labels;
@@ -51,10 +52,11 @@ class ChangelogConfig
     ) {
         $this->user        = $user;
         $this->repository  = $repository;
-        $this->milestone   = $milestone;
         $this->labels      = $labels;
         $this->includeOpen = $includeOpen;
         $this->options     = array_merge($this->options, $options);
+
+        $this->setSingleMilestone($milestone);
     }
 
     public function getUser() : string
@@ -83,12 +85,32 @@ class ChangelogConfig
 
     public function getMilestone() : string
     {
-        return $this->milestone;
+        return $this->getFirstMilestone();
+    }
+
+    /** @return string[] */
+    public function getMilestones() : array
+    {
+        return $this->milestones;
     }
 
     public function setMilestone(string $milestone) : self
     {
-        $this->milestone = $milestone;
+        $this->setSingleMilestone($milestone);
+
+        return $this;
+    }
+
+    public function setMilestones(string ...$milestone) : self
+    {
+        $this->milestones = $milestone;
+
+        return $this;
+    }
+
+    public function addMilestone(string ...$milestone) : self
+    {
+        $this->milestones = array_merge($this->milestones, $milestone);
 
         return $this;
     }
@@ -187,7 +209,7 @@ class ChangelogConfig
     {
         $query = urlencode(sprintf(
             'milestone:"%s" repo:%s/%s%s%s',
-            str_replace('"', '\"', $this->milestone),
+            str_replace('"', '\"', $this->getFirstMilestone()),
             $this->user,
             $this->repository,
             $this->includeOpen ? '' : ' state:closed',
@@ -199,11 +221,38 @@ class ChangelogConfig
 
     public function isValid() : bool
     {
-        return $this->user !== '' && $this->repository !== '' && $this->milestone !== '';
+        return $this->user !== '' && $this->repository !== '' && $this->milestones !== [] && ! $this->containsEmptyMilestone();
+    }
+
+    private function containsEmptyMilestone() : bool
+    {
+        foreach ($this->milestones as $milestone) {
+            if ($milestone === '') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function getFirstMilestone() : string
+    {
+        return $this->milestones[0] ?? '';
     }
 
     private function getRootGitHubUrl() : string
     {
         return $this->options['rootGitHubUrl'] ?? self::DEFAULT_ROOT_GITHUB_URL;
+    }
+
+    private function setSingleMilestone(string $milestone) : void
+    {
+        $this->milestones = [];
+
+        if ($milestone === '') {
+            return;
+        }
+
+        array_push($this->milestones, $milestone);
     }
 }
