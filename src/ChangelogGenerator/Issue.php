@@ -18,7 +18,7 @@ class Issue
     /** @var string */
     private $title;
 
-    /** @var string */
+    /** @var string|null */
     private $body;
 
     /** @var string */
@@ -45,7 +45,7 @@ class Issue
     public function __construct(
         int $number,
         string $title,
-        string $body,
+        ?string $body,
         string $url,
         string $user,
         array $labels,
@@ -70,7 +70,7 @@ class Issue
         return $this->title;
     }
 
-    public function getBody() : string
+    public function getBody() : ?string
     {
         return $this->body;
     }

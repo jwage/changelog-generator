@@ -113,6 +113,23 @@ final class IssueTest extends TestCase
         self::assertEquals(' - [2: Test Title](https://www.google.com) thanks to @Ocramius and @jwage', $pullRequest->render());
     }
 
+    public function testEmptyBodyIssuesGetsRendered() : void
+    {
+        $pullRequest = new Issue(
+            3,
+            'PR without body',
+            null,
+            'https://www.google.com',
+            'jwage',
+            ['Bugfix'],
+            true
+        );
+
+        $pullRequest->setLinkedIssue($this->issue);
+
+        self::assertSame(' - [3: PR without body](https://www.google.com) thanks to @jwage', $pullRequest->render());
+    }
+
     protected function setUp() : void
     {
         $this->issue = new Issue(
