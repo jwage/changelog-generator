@@ -17,7 +17,7 @@ class IssueGrouper
      *
      * @return IssueGroup[]
      */
-    public function groupIssues(array $issues, ChangelogConfig $changelogConfig) : array
+    public function groupIssues(array $issues, ChangelogConfig $changelogConfig): array
     {
         $this->linkIssues($issues);
 
@@ -29,7 +29,7 @@ class IssueGrouper
      *
      * @return IssueGroup[]
      */
-    private function groupIssuesByLabels(array $issues, ChangelogConfig $changelogConfig) : array
+    private function groupIssuesByLabels(array $issues, ChangelogConfig $changelogConfig): array
     {
         $issueGroups = [];
 
@@ -46,7 +46,7 @@ class IssueGrouper
         return $issueGroups;
     }
 
-    private function generateIssueGroupName(Issue $issue, ChangelogConfig $changelogConfig) : string
+    private function generateIssueGroupName(Issue $issue, ChangelogConfig $changelogConfig): string
     {
         $labelFilters = $changelogConfig->getLabels();
 
@@ -64,9 +64,9 @@ class IssueGrouper
      *
      * @return Issue[]
      */
-    private function getIssuesToGroup(array $issues) : array
+    private function getIssuesToGroup(array $issues): array
     {
-        return array_filter($issues, static function (Issue $issue) : bool {
+        return array_filter($issues, static function (Issue $issue): bool {
             return (! $issue->isPullRequest() && $issue->getLinkedPullRequest() !== null) === false;
         });
     }
@@ -74,7 +74,7 @@ class IssueGrouper
     /**
      * @param Issue[] $issues
      */
-    private function linkIssues(array $issues) : void
+    private function linkIssues(array $issues): void
     {
         foreach ($issues as $issue) {
             if (! $issue->isPullRequest()) {

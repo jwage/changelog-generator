@@ -12,32 +12,24 @@ class Issue
     private const SINGLE_CONTRIBUTOR_ISSUE_LINE_FORMAT = ' - [%d: %s](%s) thanks to @%s';
     private const MULTI_CONTRIBUTOR_ISSUE_LINE_FORMAT  = ' - [%d: %s](%s) thanks to @%s and @%s';
 
-    /** @var int */
-    private $number;
+    private int $number;
 
-    /** @var string */
-    private $title;
+    private string $title;
 
-    /** @var string|null */
-    private $body;
+    private ?string $body = null;
 
-    /** @var string */
-    private $url;
+    private string $url;
 
-    /** @var string */
-    private $user;
+    private string $user;
 
     /** @var string[] */
-    private $labels = [];
+    private array $labels = [];
 
-    /** @var bool */
-    private $isPullRequest;
+    private bool $isPullRequest;
 
-    /** @var Issue|null */
-    private $linkedPullRequest;
+    private ?Issue $linkedPullRequest = null;
 
-    /** @var Issue|null */
-    private $linkedIssue;
+    private ?Issue $linkedIssue = null;
 
     /**
      * @param string[] $labels
@@ -60,27 +52,27 @@ class Issue
         $this->isPullRequest = $isPullRequest;
     }
 
-    public function getNumber() : int
+    public function getNumber(): int
     {
         return $this->number;
     }
 
-    public function getTitle() : string
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function getBody() : ?string
+    public function getBody(): ?string
     {
         return $this->body;
     }
 
-    public function getUrl() : string
+    public function getUrl(): string
     {
         return $this->url;
     }
 
-    public function getUser() : string
+    public function getUser(): string
     {
         return $this->user;
     }
@@ -88,32 +80,32 @@ class Issue
     /**
      * @return string[]
      */
-    public function getLabels() : array
+    public function getLabels(): array
     {
         return $this->labels;
     }
 
-    public function isPullRequest() : bool
+    public function isPullRequest(): bool
     {
         return $this->isPullRequest;
     }
 
-    public function getLinkedPullRequest() : ?Issue
+    public function getLinkedPullRequest(): ?Issue
     {
         return $this->linkedPullRequest;
     }
 
-    public function setLinkedPullRequest(Issue $linkedPullRequest) : void
+    public function setLinkedPullRequest(Issue $linkedPullRequest): void
     {
         $this->linkedPullRequest = $linkedPullRequest;
     }
 
-    public function getLinkedIssue() : ?Issue
+    public function getLinkedIssue(): ?Issue
     {
         return $this->linkedIssue;
     }
 
-    public function setLinkedIssue(Issue $linkedIssue) : void
+    public function setLinkedIssue(Issue $linkedIssue): void
     {
         $this->linkedIssue = $linkedIssue;
     }
@@ -121,7 +113,7 @@ class Issue
     /**
      * @return string[]
      */
-    public function getContributors() : array
+    public function getContributors(): array
     {
         $contributors = [];
 
@@ -138,7 +130,7 @@ class Issue
         return array_values($contributors);
     }
 
-    public function render() : string
+    public function render(): string
     {
         if ($this->linkedIssue instanceof self && $this->linkedIssue->getUser() !== $this->user) {
             return sprintf(

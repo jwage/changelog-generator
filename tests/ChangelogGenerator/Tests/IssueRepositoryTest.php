@@ -9,21 +9,20 @@ use ChangelogGenerator\Issue;
 use ChangelogGenerator\IssueFactory;
 use ChangelogGenerator\IssueFetcher;
 use ChangelogGenerator\IssueRepository;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 
 final class IssueRepositoryTest extends TestCase
 {
-    /** @var PHPUnit_Framework_MockObject_MockObject|IssueFetcher */
+    /** @var MockObject&IssueFetcher */
     private $issueFetcher;
 
-    /** @var PHPUnit_Framework_MockObject_MockObject|IssueFactory */
+    /** @var MockObject&IssueFactory */
     private $issueFactory;
 
-    /** @var IssueRepository */
-    private $issueRepository;
+    private IssueRepository $issueRepository;
 
-    public function testGetMilestoneIssues() : void
+    public function testGetMilestoneIssues(): void
     {
         $changelogConfig = new ChangelogConfig('jwage', 'changelog-generator', '1.0', []);
 
@@ -52,29 +51,31 @@ final class IssueRepositoryTest extends TestCase
         $issue1 = $this->createMock(Issue::class);
         $issue2 = $this->createMock(Issue::class);
 
-        $this->issueFactory->expects(self::at(0))
-            ->method('create')
-            ->with([
-                'number' => 1,
-                'title' => 'Issue #1',
-                'body' => 'Issue #1 Body',
-                'html_url' => 'https://github.com/jwage/changelog-generator/issue/1',
-                'user' => ['login' => 'jwage'],
-                'labels' => [['name' => 'Enhancement']],
-            ])
-            ->willReturn($issue1);
-
-        $this->issueFactory->expects(self::at(1))
-            ->method('create')
-            ->with([
-                'number' => 2,
-                'title' => '[Bug] Issue #2',
-                'body' => 'Issue #2 Body',
-                'html_url' => 'https://github.com/jwage/changelog-generator/issue/2',
-                'user' => ['login' => 'jwage'],
-                'labels' => [['name' => 'Bug']],
-            ])
-            ->willReturn($issue2);
+        $this->issueFactory->method('create')
+            ->willReturnMap([
+                [
+                    [
+                        'number' => 1,
+                        'title' => 'Issue #1',
+                        'body' => 'Issue #1 Body',
+                        'html_url' => 'https://github.com/jwage/changelog-generator/issue/1',
+                        'user' => ['login' => 'jwage'],
+                        'labels' => [['name' => 'Enhancement']],
+                    ],
+                    $issue1,
+                ],
+                [
+                    [
+                        'number' => 2,
+                        'title' => '[Bug] Issue #2',
+                        'body' => 'Issue #2 Body',
+                        'html_url' => 'https://github.com/jwage/changelog-generator/issue/2',
+                        'user' => ['login' => 'jwage'],
+                        'labels' => [['name' => 'Bug']],
+                    ],
+                    $issue2,
+                ],
+            ]);
 
         $issues = $this->issueRepository->getMilestoneIssues($changelogConfig);
 
@@ -83,7 +84,7 @@ final class IssueRepositoryTest extends TestCase
         self::assertSame($issue2, $issues[2]);
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->issueFetcher = $this->createMock(IssueFetcher::class);
         $this->issueFactory = $this->createMock(IssueFactory::class);

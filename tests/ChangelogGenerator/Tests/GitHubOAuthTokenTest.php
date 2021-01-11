@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 final class GitHubOAuthTokenTest extends TestCase
 {
-    public function testGetHttpBasicAuthorization() : void
+    public function testGetHttpBasicAuthorization(): void
     {
         self::assertSame(
             'token oauthtoken',

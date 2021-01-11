@@ -8,17 +8,16 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
+
 use function json_decode;
 use function preg_match;
 use function sprintf;
 
 class IssueClient
 {
-    /** @var RequestFactoryInterface */
-    private $messageFactory;
+    private RequestFactoryInterface $messageFactory;
 
-    /** @var ClientInterface */
-    private $client;
+    private ClientInterface $client;
 
     public function __construct(
         RequestFactoryInterface $messageFactory,
@@ -31,7 +30,7 @@ class IssueClient
     public function execute(
         string $url,
         ?GitHubCredentials $gitHubCredentials = null
-    ) : IssueClientResponse {
+    ): IssueClientResponse {
         $request = $this->messageFactory
             ->createRequest('GET', $url)
             ->withAddedHeader('User-Agent', 'jwage/changelog-generator');
@@ -64,7 +63,7 @@ class IssueClient
         return new IssueClientResponse($body, $this->getNextUrl($response));
     }
 
-    private function getNextUrl(ResponseInterface $response) : ?string
+    private function getNextUrl(ResponseInterface $response): ?string
     {
         $links = $response->getHeader('Link');
 

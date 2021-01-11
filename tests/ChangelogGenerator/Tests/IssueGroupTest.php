@@ -6,31 +6,29 @@ namespace ChangelogGenerator\Tests;
 
 use ChangelogGenerator\Issue;
 use ChangelogGenerator\IssueGroup;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 
 final class IssueGroupTest extends TestCase
 {
-    /** @var string */
-    private $name;
+    private string $name;
 
-    /** @var Issue[]|PHPUnit_Framework_MockObject_MockObject[] */
-    private $issues = [];
+    /** @phpstan-var (Issue&MockObject)[] */
+    private array $issues = [];
 
-    /** @var IssueGroup */
-    private $issueGroup;
+    private IssueGroup $issueGroup;
 
-    public function testGetName() : void
+    public function testGetName(): void
     {
         self::assertSame($this->name, $this->issueGroup->getName());
     }
 
-    public function testGetIssues() : void
+    public function testGetIssues(): void
     {
         self::assertSame($this->issues, $this->issueGroup->getIssues());
     }
 
-    public function testAddIssue() : void
+    public function testAddIssue(): void
     {
         self::assertCount(1, $this->issueGroup->getIssues());
 
@@ -41,7 +39,7 @@ final class IssueGroupTest extends TestCase
         self::assertCount(2, $this->issueGroup->getIssues());
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->name   = 'Enhancement';
         $this->issues = [$this->createMock(Issue::class)];

@@ -6,5 +6,5 @@ namespace ChangelogGenerator;
 
 interface GitHubCredentials
 {
-    public function getAuthorizationHeader() : string;
+    public function getAuthorizationHeader(): string;
 }

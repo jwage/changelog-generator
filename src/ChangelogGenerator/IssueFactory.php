@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace ChangelogGenerator;
 
-use const ENT_COMPAT;
 use function array_column;
 use function htmlentities;
 use function sort;
 use function str_replace;
+
+use const ENT_COMPAT;
 
 class IssueFactory
 {
     /**
      * @param mixed[] $issue
      */
-    public function create(array $issue) : Issue
+    public function create(array $issue): Issue
     {
         return new Issue(
             $issue['number'],
@@ -24,11 +25,11 @@ class IssueFactory
             $issue['html_url'],
             $issue['user']['login'],
             $this->getLabels($issue['labels']),
-            isset($issue['pull_request']) ? true : false
+            isset($issue['pull_request'])
         );
     }
 
-    private function getTitle(string $title) : string
+    private function getTitle(string $title): string
     {
         $title = htmlentities($title, ENT_COMPAT, 'UTF-8');
         $title = str_replace(['[', ']', '_'], ['&#91;', '&#93;', '&#95;'], $title);
@@ -41,7 +42,7 @@ class IssueFactory
      *
      * @return string[]
      */
-    private function getLabels(array $labels) : array
+    private function getLabels(array $labels): array
     {
         $labels = array_column($labels, 'name');
 

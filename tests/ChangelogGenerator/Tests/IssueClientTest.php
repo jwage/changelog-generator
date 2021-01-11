@@ -23,10 +23,9 @@ final class IssueClientTest extends TestCase
     /** @var ClientInterface|MockObject */
     private $client;
 
-    /** @var IssueClient */
-    private $issueClient;
+    private IssueClient $issueClient;
 
-    public function testExecute() : void
+    public function testExecute(): void
     {
         $request  = $this->createMock(RequestInterface::class);
         $response = $this->createMock(ResponseInterface::class);
@@ -71,7 +70,7 @@ final class IssueClientTest extends TestCase
         self::assertSame('https://www.google.com?next', $response->getNextUrl());
     }
 
-    public function testExecuteNullNextUrl() : void
+    public function testExecuteNullNextUrl(): void
     {
         $request  = $this->createMock(RequestInterface::class);
         $response = $this->createMock(ResponseInterface::class);
@@ -116,7 +115,7 @@ final class IssueClientTest extends TestCase
         self::assertNull($response->getNextUrl());
     }
 
-    public function testExecuteThrowsRuntimeExceptionOnNon200() : void
+    public function testExecuteThrowsRuntimeExceptionOnNon200(): void
     {
         $request  = $this->createMock(RequestInterface::class);
         $response = $this->createMock(ResponseInterface::class);
@@ -156,7 +155,7 @@ final class IssueClientTest extends TestCase
         $this->issueClient->execute('https://www.google.com');
     }
 
-    public function testExecuteWithGitHubCredentials() : void
+    public function testExecuteWithGitHubCredentials(): void
     {
         $request  = $this->createMock(RequestInterface::class);
         $response = $this->createMock(ResponseInterface::class);
@@ -166,15 +165,12 @@ final class IssueClientTest extends TestCase
             ->with('GET', 'https://www.google.com')
             ->willReturn($request);
 
-        $request->expects(self::at(0))
-            ->method('withAddedHeader')
-            ->with('User-Agent', 'jwage/changelog-generator')
-            ->willReturn($request);
-
-        $request->expects(self::at(1))
-            ->method('withAddedHeader')
-            ->with('Authorization', 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=')
-            ->willReturn($request);
+        $request->method('withAddedHeader')
+            ->with(
+                self::logicalOr('User-Agent', 'Authorization'),
+                self::logicalOr('jwage/changelog-generator', 'Basic dXNlcm5hbWU6cGFzc3dvcmQ=')
+            )
+            ->willReturnSelf();
 
         $this->client->expects(self::once())
             ->method('sendRequest')
@@ -208,7 +204,7 @@ final class IssueClientTest extends TestCase
         self::assertSame(['test' => true], $response->getBody());
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->messageFactory = $this->createMock(RequestFactoryInterface::class);
         $this->client         = $this->createMock(ClientInterface::class);

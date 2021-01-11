@@ -9,13 +9,14 @@ use ChangelogGenerator\ChangelogGenerator;
 use ChangelogGenerator\Command\GenerateChangelogCommand;
 use InvalidArgumentException;
 use PackageVersions\Versions;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
+
 use function file_exists;
 use function sprintf;
 use function sys_get_temp_dir;
@@ -25,16 +26,15 @@ use function unlink;
 
 final class ConsoleTest extends TestCase
 {
-    /** @var PHPUnit_Framework_MockObject_MockObject|ChangelogGenerator */
+    /** @var MockObject&ChangelogGenerator */
     private $changelogGenerator;
 
-    /** @var PHPUnit_Framework_MockObject_MockObject|GenerateChangelogCommand */
+    /** @var MockObject&GenerateChangelogCommand */
     private $generateChangelogCommand;
 
-    /** @var Application */
-    private $application;
+    private Application $application;
 
-    public function testGenerate() : void
+    public function testGenerate(): void
     {
         $input = new ArrayInput([
             'command'       => 'generate',
@@ -54,7 +54,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateShowContributors() : void
+    public function testGenerateShowContributors(): void
     {
         $input = new ArrayInput([
             'command'             => 'generate',
@@ -76,7 +76,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateInvalidConfig() : void
+    public function testGenerateInvalidConfig(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('You must pass a config file with the --config option or manually specify the --user --repository and --milestone options.');
@@ -94,7 +94,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateFile() : void
+    public function testGenerateFile(): void
     {
         $input = new ArrayInput([
             'command'       => 'generate',
@@ -120,7 +120,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateFilePathGiven() : void
+    public function testGenerateFilePathGiven(): void
     {
         $input = new ArrayInput([
             'command'       => 'generate',
@@ -146,7 +146,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateFileAppend() : void
+    public function testGenerateFileAppend(): void
     {
         $input = new ArrayInput([
             'command'       => 'generate',
@@ -173,7 +173,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateFilePrepend() : void
+    public function testGenerateFilePrepend(): void
     {
         $input = new ArrayInput([
             'command'       => 'generate',
@@ -200,7 +200,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateFilePrependStreamOutput() : void
+    public function testGenerateFilePrependStreamOutput(): void
     {
         $input = new ArrayInput([
             'command'       => 'generate',
@@ -227,7 +227,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateFilePrependCreatesFileThatDoesNotExist() : void
+    public function testGenerateFilePrependCreatesFileThatDoesNotExist(): void
     {
         $file = sprintf('%s/%sCHANGELOG.md', sys_get_temp_dir(), uniqid());
 
@@ -262,7 +262,7 @@ final class ConsoleTest extends TestCase
         self::assertTrue($exists);
     }
 
-    public function testGenerateLabel() : void
+    public function testGenerateLabel(): void
     {
         $input = new ArrayInput([
             'command'       => 'generate',
@@ -283,7 +283,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateConfig() : void
+    public function testGenerateConfig(): void
     {
         $input = new ArrayInput([
             'command'       => 'generate',
@@ -306,7 +306,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateConfigDoesNotExist() : void
+    public function testGenerateConfigDoesNotExist(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Configuration file "unknown.php" does not exist.');
@@ -331,7 +331,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateConfigEmpty() : void
+    public function testGenerateConfigEmpty(): void
     {
         $configFile = __DIR__ . '/_files/empty.php';
 
@@ -358,7 +358,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateConfigInvalidProject() : void
+    public function testGenerateConfigInvalidProject(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Could not find project named "unknown" configured');
@@ -384,7 +384,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateIncludeOpenOptionNotProvided() : void
+    public function testGenerateIncludeOpenOptionNotProvided(): void
     {
         $input = new ArrayInput([
             'command'        => 'generate',
@@ -407,7 +407,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateIncludeOpenDefault() : void
+    public function testGenerateIncludeOpenDefault(): void
     {
         $input = new ArrayInput([
             'command'        => 'generate',
@@ -431,7 +431,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateIncludeOpenTrue() : void
+    public function testGenerateIncludeOpenTrue(): void
     {
         $input = new ArrayInput([
             'command'        => 'generate',
@@ -455,7 +455,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateIncludeOpenFalse() : void
+    public function testGenerateIncludeOpenFalse(): void
     {
         $input = new ArrayInput([
             'command'        => 'generate',
@@ -479,7 +479,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testGenerateConfigOverrideNoLabels() : void
+    public function testGenerateConfigOverrideNoLabels(): void
     {
         $input = new ArrayInput([
             'command'       => 'generate',
@@ -501,7 +501,7 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
-    public function testCreateOutput() : void
+    public function testCreateOutput(): void
     {
         $generateChangelogCommand = new GenerateChangelogCommandStub($this->changelogGenerator);
 
@@ -525,17 +525,16 @@ final class ConsoleTest extends TestCase
         unlink($file);
     }
 
-    public function testCreateOutputCouldNotOpenHandleInvalidArgumentException() : void
+    public function testCreateOutputCouldNotOpenHandleInvalidArgumentException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Could not open handle for /tmp/test.md');
 
         $file = sprintf('%s/test.md', sys_get_temp_dir());
 
-        /** @var PHPUnit_Framework_MockObject_MockObject|GenerateChangelogCommandStub $generateChangelogCommand */
         $generateChangelogCommand = $this->getMockBuilder(GenerateChangelogCommandStub::class)
             ->setConstructorArgs([$this->changelogGenerator])
-            ->setMethods(['fopen'])
+            ->onlyMethods(['fopen'])
             ->getMock();
 
         $generateChangelogCommand->expects(self::once())
@@ -546,7 +545,7 @@ final class ConsoleTest extends TestCase
         $generateChangelogCommand->createOutputTest($file, GenerateChangelogCommand::WRITE_STRATEGY_APPEND);
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->changelogGenerator = $this->createMock(ChangelogGenerator::class);
 
@@ -556,7 +555,7 @@ final class ConsoleTest extends TestCase
 
         $this->generateChangelogCommand = $this->getMockBuilder(GenerateChangelogCommand::class)
             ->setConstructorArgs([$this->changelogGenerator])
-            ->setMethods(['createOutput'])
+            ->onlyMethods(['createOutput'])
             ->getMock();
 
         $this->application->add($this->generateChangelogCommand);
@@ -565,7 +564,7 @@ final class ConsoleTest extends TestCase
 
 class GenerateChangelogCommandStub extends GenerateChangelogCommand
 {
-    public function createOutputTest(string $file, string $fileWriteStrategy) : OutputInterface
+    public function createOutputTest(string $file, string $fileWriteStrategy): OutputInterface
     {
         return $this->createOutput($file, $fileWriteStrategy);
     }

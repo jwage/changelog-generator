@@ -9,11 +9,9 @@ use function sprintf;
 
 final class GitHubUsernamePassword implements GitHubCredentials
 {
-    /** @var string */
-    private $username;
+    private string $username;
 
-    /** @var string */
-    private $passwordOrToken;
+    private string $passwordOrToken;
 
     public function __construct(string $username, string $passwordOrToken)
     {
@@ -21,7 +19,7 @@ final class GitHubUsernamePassword implements GitHubCredentials
         $this->passwordOrToken = $passwordOrToken;
     }
 
-    public function getAuthorizationHeader() : string
+    public function getAuthorizationHeader(): string
     {
         return sprintf('Basic %s', base64_encode(sprintf('%s:%s', $this->username, $this->passwordOrToken)));
     }

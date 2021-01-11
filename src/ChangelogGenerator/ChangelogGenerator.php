@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ChangelogGenerator;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use const PHP_EOL;
+
 use function array_filter;
 use function array_map;
 use function array_unique;
@@ -15,13 +15,13 @@ use function mb_strlen;
 use function sprintf;
 use function str_repeat;
 
+use const PHP_EOL;
+
 class ChangelogGenerator
 {
-    /** @var IssueRepository */
-    private $issueRepository;
+    private IssueRepository $issueRepository;
 
-    /** @var IssueGrouper */
-    private $issueGrouper;
+    private IssueGrouper $issueGrouper;
 
     public function __construct(IssueRepository $issueRepository, IssueGrouper $issueGrouper)
     {
@@ -32,7 +32,7 @@ class ChangelogGenerator
     public function generate(
         ChangelogConfig $changelogConfig,
         OutputInterface $output
-    ) : void {
+    ): void {
         $issues      = $this->issueRepository->getMilestoneIssues($changelogConfig);
         $issueGroups = $this->issueGrouper->groupIssues($issues, $changelogConfig);
 
@@ -66,7 +66,7 @@ class ChangelogGenerator
     /**
      * @param Issue[] $issues
      */
-    private function outputContributors(OutputInterface $output, array $issues) : void
+    private function outputContributors(OutputInterface $output, array $issues): void
     {
         $contributors = $this->buildContributorsList($issues);
 
@@ -86,7 +86,7 @@ class ChangelogGenerator
      *
      * @return string[]
      */
-    private function buildContributorsList(array $issues) : array
+    private function buildContributorsList(array $issues): array
     {
         $contributors = [];
 
@@ -99,7 +99,7 @@ class ChangelogGenerator
         return array_values($contributors);
     }
 
-    private function buildMarkdownHeaderText(string $header, string $headerCharacter) : string
+    private function buildMarkdownHeaderText(string $header, string $headerCharacter): string
     {
         return sprintf(
             '%s%s%s',
@@ -112,9 +112,9 @@ class ChangelogGenerator
     /**
      * @param Issue[] $issues
      */
-    private function getNumberOfIssues(array $issues) : int
+    private function getNumberOfIssues(array $issues): int
     {
-        return count(array_filter($issues, static function (Issue $issue) : bool {
+        return count(array_filter($issues, static function (Issue $issue): bool {
             return ! $issue->isPullRequest();
         }));
     }
@@ -122,9 +122,9 @@ class ChangelogGenerator
     /**
      * @param Issue[] $issues
      */
-    private function getNumberOfPullRequests(array $issues) : int
+    private function getNumberOfPullRequests(array $issues): int
     {
-        return count(array_filter($issues, static function (Issue $issue) : bool {
+        return count(array_filter($issues, static function (Issue $issue): bool {
             return $issue->isPullRequest();
         }));
     }
@@ -132,9 +132,9 @@ class ChangelogGenerator
     /**
      * @param Issue[] $issues
      */
-    private function getNumberOfContributors(array $issues) : int
+    private function getNumberOfContributors(array $issues): int
     {
-        return count(array_unique(array_map(static function (Issue $issue) : string {
+        return count(array_unique(array_map(static function (Issue $issue): string {
             return $issue->getUser();
         }, $issues)));
     }
