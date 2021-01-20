@@ -53,7 +53,12 @@ jobs:
         run: ./vendor/bin/phpstan a
         if: matrix.composer == 'install'
       - name: Test
-        run: ./vendor/bin/phpunit --coverage-clover clover.xml
+        run: |
+          ./vendor/bin/phpunit --coverage-clover clover.xml
+          wget https://scrutinizer-ci.com/ocular.phar
+          # Ocular is not super-stable: let's ignore failures here.
+          # What can happen is that Scrutinizer-CI waits for a long time for coverage to be uploaded, delaying builds
+          php ocular.phar code-coverage:upload --format=php-clover clover.xml || true
   check-mark:
     name: ✔️
     needs:
