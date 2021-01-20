@@ -5,34 +5,28 @@ declare(strict_types=1);
 namespace ChangelogGenerator\Tests;
 
 use ChangelogGenerator\ChangelogConfig;
-use ChangelogGenerator\GitHubCredentials;
 use ChangelogGenerator\GitHubUsernamePassword;
 use PHPUnit\Framework\TestCase;
 
 final class ChangelogConfigTest extends TestCase
 {
-    /** @var string */
-    private $user;
+    private string $user;
 
-    /** @var string */
-    private $repository;
+    private string $repository;
 
-    /** @var string */
-    private $milestone;
+    private string $milestone;
 
     /** @var string[] */
-    private $labels = [];
+    private array $labels = [];
 
-    /** @var bool */
-    private $includeOpen = false;
+    private bool $includeOpen = false;
 
     /** @var string[] */
-    private $options = [];
+    private array $options = [];
 
-    /** @var ChangelogConfig */
-    private $changelogConfig;
+    private ChangelogConfig $changelogConfig;
 
-    public function testGetSetUser() : void
+    public function testGetSetUser(): void
     {
         self::assertSame($this->user, $this->changelogConfig->getUser());
 
@@ -41,7 +35,7 @@ final class ChangelogConfigTest extends TestCase
         self::assertSame('romanb', $this->changelogConfig->getUser());
     }
 
-    public function testGetSetRepository() : void
+    public function testGetSetRepository(): void
     {
         self::assertSame($this->repository, $this->changelogConfig->getRepository());
 
@@ -50,7 +44,7 @@ final class ChangelogConfigTest extends TestCase
         self::assertSame('purl', $this->changelogConfig->getRepository());
     }
 
-    public function testGetSetMilestone() : void
+    public function testGetSetMilestone(): void
     {
         self::assertSame($this->milestone, $this->changelogConfig->getMilestone());
 
@@ -59,7 +53,7 @@ final class ChangelogConfigTest extends TestCase
         self::assertSame('1.0', $this->changelogConfig->getMilestone());
     }
 
-    public function testGetSetLabels() : void
+    public function testGetSetLabels(): void
     {
         self::assertSame($this->labels, $this->changelogConfig->getLabels());
 
@@ -68,7 +62,7 @@ final class ChangelogConfigTest extends TestCase
         self::assertSame(['Improvement'], $this->changelogConfig->getLabels());
     }
 
-    public function testGetSetIncludeOpen() : void
+    public function testGetSetIncludeOpen(): void
     {
         self::assertSame($this->includeOpen, $this->changelogConfig->shouldIncludeOpen());
 
@@ -77,7 +71,7 @@ final class ChangelogConfigTest extends TestCase
         self::assertTrue($this->changelogConfig->shouldIncludeOpen());
     }
 
-    public function testGetSetOptions() : void
+    public function testGetSetOptions(): void
     {
         self::assertSame(['rootGitHubUrl' => 'https://api.github.com'], $this->changelogConfig->getOptions());
 
@@ -86,7 +80,7 @@ final class ChangelogConfigTest extends TestCase
         self::assertSame(['rootGitHubUrl' => 'https://git.mycompany.com/api/v3'], $this->changelogConfig->getOptions());
     }
 
-    public function testGetSetOption() : void
+    public function testGetSetOption(): void
     {
         self::assertNull($this->changelogConfig->getOption('test'));
 
@@ -95,38 +89,38 @@ final class ChangelogConfigTest extends TestCase
         self::assertTrue($this->changelogConfig->getOption('test'));
     }
 
-    public function testGetMilestoneIssuesUrl() : void
+    public function testGetMilestoneIssuesUrl(): void
     {
         self::assertSame('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed+label%3AEnhancement', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
     }
 
-    public function testGetMilestoneIssuesUrlNoLabel() : void
+    public function testGetMilestoneIssuesUrlNoLabel(): void
     {
         self::assertSame('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed', $this->changelogConfig->getMilestoneIssuesUrl(''));
     }
 
-    public function testGetMilestoneIssuesUrlWithCustomRootGitHubUrl() : void
+    public function testGetMilestoneIssuesUrlWithCustomRootGitHubUrl(): void
     {
         $this->changelogConfig->setOptions(['rootGitHubUrl' => 'https://git.mycompany.com/api/v3']);
 
         self::assertSame('https://git.mycompany.com/api/v3/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed+label%3AEnhancement', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
     }
 
-    public function testGetMilestoneIssuesUrlWithMissingRootGitHubUrl() : void
+    public function testGetMilestoneIssuesUrlWithMissingRootGitHubUrl(): void
     {
         $this->changelogConfig->setOptions([]);
 
         self::assertSame('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed+label%3AEnhancement', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
     }
 
-    public function testGetMilestoneIssuesUrlWithOpenIncluded() : void
+    public function testGetMilestoneIssuesUrlWithOpenIncluded(): void
     {
         $this->changelogConfig->setIncludeOpen(true);
 
         self::assertSame('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+label%3AEnhancement', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
     }
 
-    public function testIsValid() : void
+    public function testIsValid(): void
     {
         self::assertTrue($this->changelogConfig->isValid());
 
@@ -142,7 +136,7 @@ final class ChangelogConfigTest extends TestCase
         self::assertFalse($changelogConfig->isValid());
     }
 
-    public function testGetSetGitHubCredentials() : void
+    public function testGetSetGitHubCredentials(): void
     {
         self::assertNull($this->changelogConfig->getGitHubCredentials());
 
@@ -150,13 +144,14 @@ final class ChangelogConfigTest extends TestCase
 
         $this->changelogConfig->setGitHubCredentials($expectedGitHubCredentials);
 
-        /** @var GitHubCredentials $gitHubCredentials */
-        $gitHubCredentials = $this->changelogConfig->getGitHubCredentials();
-
-        self::assertSame($expectedGitHubCredentials, $gitHubCredentials);
+        self::assertSame(
+            $expectedGitHubCredentials,
+            $this->changelogConfig->setGitHubCredentials($expectedGitHubCredentials)
+                ->getGitHubCredentials()
+        );
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->user       = 'jwage';
         $this->repository = 'changelog-generator';

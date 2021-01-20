@@ -8,8 +8,7 @@ use function count;
 
 class IssueFetcher
 {
-    /** @var IssueClient */
-    private $issueClient;
+    private IssueClient $issueClient;
 
     public function __construct(IssueClient $issueClient)
     {
@@ -19,7 +18,7 @@ class IssueFetcher
     /**
      * @return mixed[]
      */
-    public function fetchMilestoneIssues(ChangelogConfig $changelogConfig) : array
+    public function fetchMilestoneIssues(ChangelogConfig $changelogConfig): array
     {
         $labels = $changelogConfig->getLabels();
         $labels = count($labels) === 0 ? [''] : $labels;

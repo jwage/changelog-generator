@@ -6,11 +6,10 @@ namespace ChangelogGenerator;
 
 class IssueGroup
 {
-    /** @var string */
-    private $name;
+    private string $name;
 
     /** @var Issue[] */
-    private $issues = [];
+    private array $issues = [];
 
     /**
      * @param Issue[] $issues
@@ -21,18 +20,18 @@ class IssueGroup
         $this->issues = $issues;
     }
 
-    public function getName() : string
+    public function getName(): string
     {
         return $this->name;
     }
 
     /** @return Issue[] */
-    public function getIssues() : array
+    public function getIssues(): array
     {
         return $this->issues;
     }
 
-    public function addIssue(Issue $issue) : void
+    public function addIssue(Issue $issue): void
     {
         $this->issues[] = $issue;
     }

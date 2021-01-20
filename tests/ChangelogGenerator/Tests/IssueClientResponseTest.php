@@ -10,25 +10,23 @@ use PHPUnit\Framework\TestCase;
 final class IssueClientResponseTest extends TestCase
 {
     /** @var mixed[] */
-    private $body;
+    private array $body;
 
-    /** @var string|null */
-    private $nextUrl;
+    private ?string $nextUrl = null;
 
-    /** @var IssueClientResponse */
-    private $issueClientResponse;
+    private IssueClientResponse $issueClientResponse;
 
-    public function testGetBody() : void
+    public function testGetBody(): void
     {
         self::assertSame($this->body, $this->issueClientResponse->getBody());
     }
 
-    public function testGetNextUrl() : void
+    public function testGetNextUrl(): void
     {
         self::assertSame($this->nextUrl, $this->issueClientResponse->getNextUrl());
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->body    = ['body' => true];
         $this->nextUrl = 'https://www.google.com';

@@ -6,11 +6,9 @@ namespace ChangelogGenerator;
 
 class IssueRepository
 {
-    /** @var IssueFetcher */
-    private $issueFetcher;
+    private IssueFetcher $issueFetcher;
 
-    /** @var IssueFactory */
-    private $issueFactory;
+    private IssueFactory $issueFactory;
 
     public function __construct(IssueFetcher $issueFetcher, IssueFactory $issueFactory)
     {
@@ -21,7 +19,7 @@ class IssueRepository
     /**
      * @return Issue[]
      */
-    public function getMilestoneIssues(ChangelogConfig $changelogConfig) : array
+    public function getMilestoneIssues(ChangelogConfig $changelogConfig): array
     {
         $issuesData = $this->issueFetcher->fetchMilestoneIssues($changelogConfig);
 

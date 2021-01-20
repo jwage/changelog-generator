@@ -7,10 +7,9 @@ namespace ChangelogGenerator;
 class IssueClientResponse
 {
     /** @var mixed[] */
-    private $body;
+    private array $body;
 
-    /** @var string|null */
-    private $nextUrl;
+    private ?string $nextUrl = null;
 
     /**
      * @param mixed[] $body
@@ -24,12 +23,12 @@ class IssueClientResponse
     /**
      * @return mixed[]
      */
-    public function getBody() : array
+    public function getBody(): array
     {
         return $this->body;
     }
 
-    public function getNextUrl() : ?string
+    public function getNextUrl(): ?string
     {
         return $this->nextUrl;
     }

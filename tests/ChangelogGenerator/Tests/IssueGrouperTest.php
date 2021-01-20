@@ -11,10 +11,9 @@ use PHPUnit\Framework\TestCase;
 
 final class IssueGrouperTest extends TestCase
 {
-    /** @var IssueGrouper */
-    private $issueGrouper;
+    private IssueGrouper $issueGrouper;
 
-    public function testGroupIssues() : void
+    public function testGroupIssues(): void
     {
         $changelogConfig = new ChangelogConfig();
 
@@ -60,7 +59,7 @@ final class IssueGrouperTest extends TestCase
         self::assertSame($pullRequest4, $issue4->getLinkedPullRequest());
     }
 
-    public function testGroupIssuesWithLabelFilters() : void
+    public function testGroupIssuesWithLabelFilters(): void
     {
         $changelogConfig = new ChangelogConfig();
         $changelogConfig->setLabels(['Enhancement', 'Bug']);
@@ -93,7 +92,7 @@ final class IssueGrouperTest extends TestCase
         self::assertTrue(isset($issueGroups['Bug']));
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->issueGrouper = new IssueGrouper();
     }

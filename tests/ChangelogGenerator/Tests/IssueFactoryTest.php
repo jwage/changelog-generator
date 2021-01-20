@@ -9,10 +9,9 @@ use PHPUnit\Framework\TestCase;
 
 final class IssueFactoryTest extends TestCase
 {
-    /** @var IssueFactory */
-    private $issueFactory;
+    private IssueFactory $issueFactory;
 
-    public function testCreate() : void
+    public function testCreate(): void
     {
         $issue = $this->issueFactory->create([
             'number' => 1,
@@ -31,7 +30,7 @@ final class IssueFactoryTest extends TestCase
         self::assertSame(['Enhancement'], $issue->getLabels());
     }
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->issueFactory = new IssueFactory();
     }

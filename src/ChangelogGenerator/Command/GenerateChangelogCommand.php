@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
+
 use function assert;
 use function count;
 use function current;
@@ -35,8 +36,7 @@ class GenerateChangelogCommand extends Command
     public const WRITE_STRATEGY_APPEND  = 'append';
     public const WRITE_STRATEGY_PREPEND = 'prepend';
 
-    /** @var ChangelogGenerator */
-    private $changelogGenerator;
+    private ChangelogGenerator $changelogGenerator;
 
     public function __construct(ChangelogGenerator $changelogGenerator)
     {
@@ -45,7 +45,7 @@ class GenerateChangelogCommand extends Command
         parent::__construct();
     }
 
-    protected function configure() : void
+    protected function configure(): void
     {
         $this
             ->setName('generate')
@@ -131,7 +131,7 @@ EOT
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) : ?int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $changelogConfig = $this->getChangelogConfig($input);
 
@@ -171,7 +171,7 @@ EOT
         return 0;
     }
 
-    private function getChangelogConfig(InputInterface $input) : ChangelogConfig
+    private function getChangelogConfig(InputInterface $input): ChangelogConfig
     {
         $changelogConfig = $this->loadConfigFile($input);
 
@@ -189,7 +189,7 @@ EOT
     /**
      * @throws RuntimeException
      */
-    private function getStringOption(InputInterface $input, string $name) : string
+    private function getStringOption(InputInterface $input, string $name): string
     {
         $value = $input->getOption($name);
 
@@ -204,7 +204,7 @@ EOT
         throw new RuntimeException(sprintf('Invalid option value type: %s', gettype($value)));
     }
 
-    private function getBooleanOption(InputInterface $input, string $name) : bool
+    private function getBooleanOption(InputInterface $input, string $name): bool
     {
         $value = $input->getOption($name);
 
@@ -219,17 +219,13 @@ EOT
         }
 
         // option provided and value was provided
-        if (is_string($value) && in_array($value, ['1', 'true'], true)) {
-            return true;
-        }
-
-        return false;
+        return is_string($value) && in_array($value, ['1', 'true'], true);
     }
 
     /**
      * @return string[]
      */
-    private function getArrayOption(InputInterface $input, string $name) : array
+    private function getArrayOption(InputInterface $input, string $name): array
     {
         /** @var string[] $value */
         $value = $input->getOption($name);
@@ -248,7 +244,7 @@ EOT
     /**
      * @throws InvalidArgumentException
      */
-    protected function createOutput(string $file, string $fileWriteStrategy) : OutputInterface
+    protected function createOutput(string $file, string $fileWriteStrategy): OutputInterface
     {
         if ($fileWriteStrategy === self::WRITE_STRATEGY_PREPEND) {
             return new BufferedOutput();
@@ -263,7 +259,7 @@ EOT
         return new StreamOutput($handle);
     }
 
-    private function getFileHandleMode(string $fileWriteStrategy) : string
+    private function getFileHandleMode(string $fileWriteStrategy): string
     {
         if ($fileWriteStrategy === self::WRITE_STRATEGY_APPEND) {
             return 'a+';
@@ -272,7 +268,7 @@ EOT
         return 'w+';
     }
 
-    private function getChangelogOutput(InputInterface $input, OutputInterface $output) : OutputInterface
+    private function getChangelogOutput(InputInterface $input, OutputInterface $output): OutputInterface
     {
         $file              = $input->getOption('file');
         $fileWriteStrategy = $this->getFileWriteStrategy($input);
@@ -290,7 +286,7 @@ EOT
         return $changelogOutput;
     }
 
-    private function getFileWriteStrategy(InputInterface $input) : string
+    private function getFileWriteStrategy(InputInterface $input): string
     {
         $append  = (bool) $input->getOption('append');
         $prepend = (bool) $input->getOption('prepend');
@@ -306,7 +302,7 @@ EOT
         return self::WRITE_STRATEGY_REPLACE;
     }
 
-    private function getChangelogFilePath() : string
+    private function getChangelogFilePath(): string
     {
         return sprintf('%s/CHANGELOG.md', getcwd());
     }
@@ -314,7 +310,7 @@ EOT
     /**
      * @throws InvalidArgumentException
      */
-    private function loadConfigFile(InputInterface $input) : ?ChangelogConfig
+    private function loadConfigFile(InputInterface $input): ?ChangelogConfig
     {
         $config = $input->getOption('config');
 
@@ -351,11 +347,13 @@ EOT
     /**
      * @param ChangelogConfig[] $changelogConfigs
      */
-    private function findChangelogConfig(InputInterface $input, array $changelogConfigs) : ChangelogConfig
+    private function findChangelogConfig(InputInterface $input, array $changelogConfigs): ChangelogConfig
     {
         $project = $input->getOption('project');
 
         $changelogConfig = current($changelogConfigs);
+
+        assert($changelogConfig !== false);
 
         if ($project !== null) {
             assert(is_string($project));
@@ -370,7 +368,7 @@ EOT
         return $changelogConfig;
     }
 
-    private function loadChangelogConfigFromInput(InputInterface $input, ChangelogConfig $changelogConfig) : void
+    private function loadChangelogConfigFromInput(InputInterface $input, ChangelogConfig $changelogConfig): void
     {
         if ($input->getOption('user') !== null) {
             $changelogConfig->setUser($this->getStringOption($input, 'user'));

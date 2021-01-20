@@ -13,29 +13,23 @@ class ChangelogConfig
 {
     private const DEFAULT_ROOT_GITHUB_URL = 'https://api.github.com';
 
-    /** @var string */
-    private $user;
+    private string $user;
 
-    /** @var string */
-    private $repository;
+    private string $repository;
 
-    /** @var string */
-    private $milestone;
+    private string $milestone;
 
     /** @var string[] */
-    private $labels;
+    private array $labels;
 
-    /** @var bool */
-    private $includeOpen;
+    private bool $includeOpen;
 
-    /** @var bool */
-    private $showContributors = false;
+    private bool $showContributors = false;
 
-    /** @var GitHubCredentials|null */
-    private $gitHubCredentials;
+    private ?GitHubCredentials $gitHubCredentials = null;
 
     /** @var mixed[] */
-    private $options = ['rootGitHubUrl' => self::DEFAULT_ROOT_GITHUB_URL];
+    private array $options = ['rootGitHubUrl' => self::DEFAULT_ROOT_GITHUB_URL];
 
     /**
      * @param string[] $labels
@@ -57,36 +51,36 @@ class ChangelogConfig
         $this->options     = array_merge($this->options, $options);
     }
 
-    public function getUser() : string
+    public function getUser(): string
     {
         return $this->user;
     }
 
-    public function setUser(string $user) : self
+    public function setUser(string $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    public function getRepository() : string
+    public function getRepository(): string
     {
         return $this->repository;
     }
 
-    public function setRepository(string $repository) : self
+    public function setRepository(string $repository): self
     {
         $this->repository = $repository;
 
         return $this;
     }
 
-    public function getMilestone() : string
+    public function getMilestone(): string
     {
         return $this->milestone;
     }
 
-    public function setMilestone(string $milestone) : self
+    public function setMilestone(string $milestone): self
     {
         $this->milestone = $milestone;
 
@@ -96,7 +90,7 @@ class ChangelogConfig
     /**
      * @return string[]
      */
-    public function getLabels() : array
+    public function getLabels(): array
     {
         return $this->labels;
     }
@@ -104,43 +98,43 @@ class ChangelogConfig
     /**
      * @param string[] $labels
      */
-    public function setLabels(array $labels) : self
+    public function setLabels(array $labels): self
     {
         $this->labels = $labels;
 
         return $this;
     }
 
-    public function shouldIncludeOpen() : bool
+    public function shouldIncludeOpen(): bool
     {
         return $this->includeOpen;
     }
 
-    public function setIncludeOpen(bool $includeOpen) : self
+    public function setIncludeOpen(bool $includeOpen): self
     {
         $this->includeOpen = $includeOpen;
 
         return $this;
     }
 
-    public function showContributors() : bool
+    public function showContributors(): bool
     {
         return $this->showContributors;
     }
 
-    public function setShowContributors(bool $showContributors) : self
+    public function setShowContributors(bool $showContributors): self
     {
         $this->showContributors = $showContributors;
 
         return $this;
     }
 
-    public function getGitHubCredentials() : ?GitHubCredentials
+    public function getGitHubCredentials(): ?GitHubCredentials
     {
         return $this->gitHubCredentials;
     }
 
-    public function setGitHubCredentials(GitHubCredentials $gitHubCredentials) : self
+    public function setGitHubCredentials(GitHubCredentials $gitHubCredentials): self
     {
         $this->gitHubCredentials = $gitHubCredentials;
 
@@ -150,7 +144,7 @@ class ChangelogConfig
     /**
      * @return mixed[]
      */
-    public function getOptions() : array
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -158,7 +152,7 @@ class ChangelogConfig
     /**
      * @param mixed[] $options
      */
-    public function setOptions(array $options) : self
+    public function setOptions(array $options): self
     {
         $this->options = $options;
 
@@ -176,14 +170,14 @@ class ChangelogConfig
     /**
      * @param mixed $value
      */
-    public function setOption(string $name, $value) : self
+    public function setOption(string $name, $value): self
     {
         $this->options[$name] = $value;
 
         return $this;
     }
 
-    public function getMilestoneIssuesUrl(string $label) : string
+    public function getMilestoneIssuesUrl(string $label): string
     {
         $query = urlencode(sprintf(
             'milestone:"%s" repo:%s/%s%s%s',
@@ -197,12 +191,12 @@ class ChangelogConfig
         return sprintf('%s/search/issues?q=%s', $this->getRootGitHubUrl(), $query);
     }
 
-    public function isValid() : bool
+    public function isValid(): bool
     {
         return $this->user !== '' && $this->repository !== '' && $this->milestone !== '';
     }
 
-    private function getRootGitHubUrl() : string
+    private function getRootGitHubUrl(): string
     {
         return $this->options['rootGitHubUrl'] ?? self::DEFAULT_ROOT_GITHUB_URL;
     }
