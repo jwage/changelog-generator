@@ -53,10 +53,7 @@ jobs:
         run: ./vendor/bin/phpstan a
         if: matrix.composer == 'install'
       - name: Test
-        run: |
-          ./vendor/bin/phpunit --coverage-clover clover.xml
-          wget https://scrutinizer-ci.com/ocular.phar
-          php ocular.phar code-coverage:upload --format=php-clover clover.xml
+        run: ./vendor/bin/phpunit --coverage-clover clover.xml
   check-mark:
     name: ✔️
     needs:
