@@ -41,7 +41,10 @@
         }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "platform": {
+            "php": "7.4.7"
+        }
     },
     "extra": {
         "branch-alias": {
