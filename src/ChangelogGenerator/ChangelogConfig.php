@@ -185,7 +185,7 @@ class ChangelogConfig
             $this->user,
             $this->repository,
             $this->includeOpen ? '' : ' state:closed',
-            $label !== '' ? ' label:' . $label : ''
+            $label !== '' ? ' label:"' . $label . '"' : ''
         ));
 
         return sprintf('%s/search/issues?q=%s', $this->getRootGitHubUrl(), $query);
