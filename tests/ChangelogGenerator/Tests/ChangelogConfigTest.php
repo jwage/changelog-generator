@@ -91,7 +91,7 @@ final class ChangelogConfigTest extends TestCase
 
     public function testGetMilestoneIssuesUrl(): void
     {
-        self::assertSame('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed+label%3AEnhancement', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
+        self::assertSame('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed+label%3A%22Enhancement%22', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
     }
 
     public function testGetMilestoneIssuesUrlNoLabel(): void
@@ -103,21 +103,28 @@ final class ChangelogConfigTest extends TestCase
     {
         $this->changelogConfig->setOptions(['rootGitHubUrl' => 'https://git.mycompany.com/api/v3']);
 
-        self::assertSame('https://git.mycompany.com/api/v3/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed+label%3AEnhancement', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
+        self::assertSame('https://git.mycompany.com/api/v3/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed+label%3A%22Enhancement%22', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
     }
 
     public function testGetMilestoneIssuesUrlWithMissingRootGitHubUrl(): void
     {
         $this->changelogConfig->setOptions([]);
 
-        self::assertSame('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed+label%3AEnhancement', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
+        self::assertSame('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+state%3Aclosed+label%3A%22Enhancement%22', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
     }
 
     public function testGetMilestoneIssuesUrlWithOpenIncluded(): void
     {
         $this->changelogConfig->setIncludeOpen(true);
 
-        self::assertSame('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+label%3AEnhancement', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
+        self::assertSame('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+label%3A%22Enhancement%22', $this->changelogConfig->getMilestoneIssuesUrl('Enhancement'));
+    }
+
+    public function testGetMilestoneIssuesUrlWithEmojiInLabel(): void
+    {
+        $this->changelogConfig->setIncludeOpen(true);
+
+        self::assertSame('https://api.github.com/search/issues?q=milestone%3A%221.0%22+repo%3Ajwage%2Fchangelog-generator+label%3A%22Bug+%F0%9F%90%9E%22', $this->changelogConfig->getMilestoneIssuesUrl('Bug 🐞'));
     }
 
     public function testIsValid(): void
