@@ -22,6 +22,8 @@ class ChangelogConfig
     /** @var string[] */
     private array $labels;
 
+    private ?string $nonGroupedLabel = null;
+
     private bool $includeOpen;
 
     private bool $showContributors = false;
@@ -101,6 +103,18 @@ class ChangelogConfig
     public function setLabels(array $labels): self
     {
         $this->labels = $labels;
+
+        return $this;
+    }
+
+    public function getNonGroupedLabel(): ?string
+    {
+        return $this->nonGroupedLabel;
+    }
+
+    public function setNonGroupedLabel(string $nonGroupedLabel): self
+    {
+        $this->nonGroupedLabel = $nonGroupedLabel;
 
         return $this;
     }

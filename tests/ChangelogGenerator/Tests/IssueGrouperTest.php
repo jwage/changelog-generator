@@ -59,6 +59,53 @@ final class IssueGrouperTest extends TestCase
         self::assertSame($pullRequest4, $issue4->getLinkedPullRequest());
     }
 
+    public function testGroupIssuesWithNonGroupedLabel(): void
+    {
+        $changelogConfig = (new ChangelogConfig())->setNonGroupedLabel('Everything Else');
+
+        $issue1 = new Issue(1, '', '', '', '', ['Enhancement'], false);
+        $issue2 = new Issue(2, '', '', '', '', ['Bug'], false);
+        $issue3 = new Issue(3, '', '', '', '', [], false);
+        $issue4 = new Issue(4, '', '', '', '', ['Enhancement'], false);
+
+        $pullRequest1 = new Issue(5, '', 'Fixes #1', '', '', ['Enhancement'], true);
+        $pullRequest2 = new Issue(6, '', 'Fixes #2', '', '', ['Bug'], true);
+        $pullRequest3 = new Issue(7, '', 'Fixes #3', '', '', ['Bug'], true);
+        $pullRequest4 = new Issue(8, '', 'Fixes #4', '', '', [], true);
+
+        $issues = [
+            $issue1,
+            $issue2,
+            $issue3,
+            $issue4,
+            $pullRequest1,
+            $pullRequest2,
+            $pullRequest3,
+            $pullRequest4,
+        ];
+
+        $issueGroups = $this->issueGrouper->groupIssues($issues, $changelogConfig);
+
+        self::assertCount(3, $issueGroups);
+        self::assertTrue(isset($issueGroups['Enhancement']));
+        self::assertTrue(isset($issueGroups['Bug']));
+        self::assertTrue(isset($issueGroups['Everything Else']));
+        self::assertContains($pullRequest1, $issueGroups['Enhancement']->getIssues());
+        self::assertContains($pullRequest2, $issueGroups['Bug']->getIssues());
+        self::assertContains($pullRequest3, $issueGroups['Bug']->getIssues());
+        self::assertContains($pullRequest4, $issueGroups['Everything Else']->getIssues());
+
+        self::assertSame($issue1, $pullRequest1->getLinkedIssue());
+        self::assertSame($issue2, $pullRequest2->getLinkedIssue());
+        self::assertSame($issue3, $pullRequest3->getLinkedIssue());
+        self::assertSame($issue4, $pullRequest4->getLinkedIssue());
+
+        self::assertSame($pullRequest1, $issue1->getLinkedPullRequest());
+        self::assertSame($pullRequest2, $issue2->getLinkedPullRequest());
+        self::assertSame($pullRequest3, $issue3->getLinkedPullRequest());
+        self::assertSame($pullRequest4, $issue4->getLinkedPullRequest());
+    }
+
     public function testGroupIssuesWithLabelFilters(): void
     {
         $changelogConfig = new ChangelogConfig();
@@ -90,6 +137,40 @@ final class IssueGrouperTest extends TestCase
         self::assertCount(2, $issueGroups);
         self::assertTrue(isset($issueGroups['Enhancement']));
         self::assertTrue(isset($issueGroups['Bug']));
+    }
+
+    public function testGroupIssuesWithLabelFiltersWithNonGroupedLabel(): void
+    {
+        $changelogConfig = (new ChangelogConfig())->setNonGroupedLabel('Everything Else');
+        $changelogConfig->setLabels(['Enhancement', 'Bug']);
+
+        $issue1 = new Issue(1, '', '', '', '', ['Enhancement', 'Other'], false);
+        $issue2 = new Issue(2, '', '', '', '', ['Bug', 'Other'], false);
+        $issue3 = new Issue(3, '', '', '', '', ['Other'], false);
+        $issue4 = new Issue(4, '', '', '', '', ['Enhancement', 'Other'], false);
+
+        $pullRequest1 = new Issue(5, '', 'Fixes #1', '', '', ['Enhancement', 'Other'], true);
+        $pullRequest2 = new Issue(6, '', 'Fixes #2', '', '', ['Bug', 'Other'], true);
+        $pullRequest3 = new Issue(7, '', 'Fixes #3', '', '', ['Bug', 'Other'], true);
+        $pullRequest4 = new Issue(8, '', 'Fixes #4', '', '', ['Other'], true);
+
+        $issues = [
+            $issue1,
+            $issue2,
+            $issue3,
+            $issue4,
+            $pullRequest1,
+            $pullRequest2,
+            $pullRequest3,
+            $pullRequest4,
+        ];
+
+        $issueGroups = $this->issueGrouper->groupIssues($issues, $changelogConfig);
+
+        self::assertCount(3, $issueGroups);
+        self::assertTrue(isset($issueGroups['Enhancement']));
+        self::assertTrue(isset($issueGroups['Bug']));
+        self::assertTrue(isset($issueGroups['Everything Else']));
     }
 
     protected function setUp(): void
