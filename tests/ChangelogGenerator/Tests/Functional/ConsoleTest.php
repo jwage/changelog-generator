@@ -7,8 +7,8 @@ namespace ChangelogGenerator\Tests\Functional;
 use ChangelogGenerator\ChangelogConfig;
 use ChangelogGenerator\ChangelogGenerator;
 use ChangelogGenerator\Command\GenerateChangelogCommand;
+use Composer\InstalledVersions;
 use InvalidArgumentException;
-use PackageVersions\Versions;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
@@ -549,7 +549,7 @@ final class ConsoleTest extends TestCase
     {
         $this->changelogGenerator = $this->createMock(ChangelogGenerator::class);
 
-        $this->application = new Application('Changelog Generator', Versions::getVersion('jwage/changelog-generator'));
+        $this->application = new Application('Changelog Generator', (string) InstalledVersions::getPrettyVersion('jwage/changelog-generator'));
         $this->application->setAutoExit(false);
         $this->application->setCatchExceptions(false);
 
