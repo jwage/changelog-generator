@@ -17,11 +17,9 @@ use RuntimeException;
 
 final class IssueClientTest extends TestCase
 {
-    /** @var RequestFactoryInterface|MockObject */
-    private $messageFactory;
+    private RequestFactoryInterface|MockObject $messageFactory;
 
-    /** @var ClientInterface|MockObject */
-    private $client;
+    private ClientInterface|MockObject $client;
 
     private IssueClient $issueClient;
 
