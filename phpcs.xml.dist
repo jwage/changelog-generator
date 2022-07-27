@@ -13,6 +13,16 @@
     <file>tests</file>
 
     <rule ref="Doctrine"/>
+    
+    <!-- applying native type hints on non-final classes is a BC break, and can only be done in a new major version -->
+    <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint">
+        <exclude-pattern>*/src/ChangelogGenerator/ChangelogConfig.php</exclude-pattern>
+    </rule>
+
+    <!-- applying native type hints on non-final classes is a BC break, and can only be done in a new major version -->
+    <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingNativeTypeHint">
+        <exclude-pattern>*/src/ChangelogGenerator/ChangelogConfig.php</exclude-pattern>
+    </rule>
 
     <rule ref="Squiz.Classes.ClassFileName.NoMatch">
         <exclude-pattern>*/tests/*</exclude-pattern>

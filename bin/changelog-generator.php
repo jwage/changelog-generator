@@ -9,10 +9,10 @@ use ChangelogGenerator\IssueFactory;
 use ChangelogGenerator\IssueFetcher;
 use ChangelogGenerator\IssueGrouper;
 use ChangelogGenerator\IssueRepository;
+use Composer\InstalledVersions;
 use GuzzleHttp\Client;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Discovery\Psr17FactoryDiscovery;
-use PackageVersions\Versions;
 use Symfony\Component\Console\Application;
 
 $autoloadFiles = [
@@ -48,6 +48,6 @@ $issueGrouper = new IssueGrouper();
 
 $generator = new ChangelogGenerator($issueRepository, $issueGrouper);
 
-$application = new Application('Changelog Generator', Versions::getVersion('jwage/changelog-generator'));
+$application = new Application('Changelog Generator', InstalledVersions::getPrettyVersion('jwage/changelog-generator'));
 $application->add(new GenerateChangelogCommand($generator));
 $application->run();
