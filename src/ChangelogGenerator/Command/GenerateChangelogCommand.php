@@ -104,6 +104,12 @@ EOT
                 'The labels to generate a changelog for.'
             )
             ->addOption(
+                'non-grouped-label',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Provide a label for any item that isn\'t grouped under any other label.'
+            )
+            ->addOption(
                 'config',
                 'c',
                 InputOption::VALUE_REQUIRED,
@@ -384,6 +390,10 @@ EOT
 
         if ($input->getOption('label') !== []) {
             $changelogConfig->setLabels($this->getArrayOption($input, 'label'));
+        }
+
+        if ($input->getOption('non-grouped-label') !== null) {
+            $changelogConfig->setNonGroupedLabel($this->getStringOption($input, 'non-grouped-label'));
         }
 
         if ($input->getOption('include-open') !== '') {

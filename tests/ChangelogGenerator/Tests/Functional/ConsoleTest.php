@@ -283,6 +283,28 @@ final class ConsoleTest extends TestCase
         $this->application->run($input, $output);
     }
 
+    public function testGenerateNonGroupedLabel(): void
+    {
+        $input = new ArrayInput([
+            'command'             => 'generate',
+            '--user'              => 'jwage',
+            '--repository'        => 'changelog-generator',
+            '--milestone'         => '1.0',
+            '--label'             => ['Enhancement', 'Bug'],
+            '--non-grouped-label' => 'Non Grouped',
+        ]);
+
+        $output = $this->createMock(OutputInterface::class);
+
+        $changelogConfig = (new ChangelogConfig('jwage', 'changelog-generator', '1.0', ['Enhancement', 'Bug']))->setNonGroupedLabel('Non Grouped');
+
+        $this->changelogGenerator->expects(self::once())
+            ->method('generate')
+            ->with($changelogConfig, $output);
+
+        $this->application->run($input, $output);
+    }
+
     public function testGenerateConfig(): void
     {
         $input = new ArrayInput([

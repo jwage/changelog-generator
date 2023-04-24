@@ -56,6 +56,10 @@ class IssueGrouper
             $labels = array_intersect($issue->getLabels(), $labelFilters);
         }
 
+        if ($changelogConfig->getNonGroupedLabel() !== null && count($labels) === 0) {
+            $labels = [$changelogConfig->getNonGroupedLabel()];
+        }
+
         return implode(',', $labels);
     }
 
